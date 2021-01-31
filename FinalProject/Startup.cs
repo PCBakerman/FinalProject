@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using FinalProject.Data;
+using FinalProject.Data.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -34,6 +35,8 @@ namespace FinalProject
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddControllersWithViews();
             services.AddRazorPages();
+            services.AddScoped<IDataAccess, DataAccess>();
+            services.AddScoped<IYGOProDeckAccess, YGOProDeckAccess>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
