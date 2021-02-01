@@ -1,0 +1,85 @@
+﻿@model FinalProject.Models.ViewModels.SearchDetailsViewModel
+
+@{
+    ViewData["Title"] = "Card Details";
+}
+
+<h1>Card Details</h1>
+
+<div>
+    <h4>Card</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Result.Name)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Result.Name)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Result.Type)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Result.Type)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Result.Description)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Result.Description)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Result.Attack)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Result.Attack)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Result.Defence)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Result.Defence)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Result.Level)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Result.Level)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Result.Race)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Result.Race)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Result.Attribute)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Result.Attribute)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Result.Archetype)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Result.Archetype)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Result.Linkval)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Result.Linkval)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Result.LinkMarkers)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Result.LinkMarkers)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Index" asp-route-query="@Model.Query">Back to List</a>
+</div>
+
+

@@ -30,6 +30,16 @@ namespace FinalProject.Data
         public async Task<Deck> GetDeckAsync(int id)
         {
             var deck = _context.Decks.FirstOrDefault(x => x.Id == id);
+            deck = await PopulateCardMappings(deck);
+            return deck;
+        }
+        private async Task<Deck> PopulateCardMappings(Deck deck)
+        {
+            deck.DeckCardMappings = _context.DeckCardMappings.Where(x => x.DeckId == deck.Id).ToList();
+            foreach (var card in deck.DeckCardMappings)
+            {
+                card.Card = _context.Cards.FirstOrDefault(x => x.Id == card.CardId);
+            }
             return deck;
         }
 
@@ -48,6 +58,7 @@ namespace FinalProject.Data
                         deckData.UserInventory = deck.UserInventory;
                         deckData.UserInventoryId = deck.UserInventoryId;
                         await _context.SaveChangesAsync();
+                        deckData = await PopulateCardMappings(deckData);
                         return deckData;
 
                     }
@@ -55,6 +66,7 @@ namespace FinalProject.Data
                     {
                         _context.Decks.Add(deck);
                         await _context.SaveChangesAsync();
+                        deck = await PopulateCardMappings(deck);
                         return deck;
                     }
                 }
@@ -62,6 +74,7 @@ namespace FinalProject.Data
                 {
                     _context.Decks.Add(deck);
                     await _context.SaveChangesAsync();
+                    deck = await PopulateCardMappings(deck);
                     return deck;
                 }
             }
@@ -69,6 +82,33 @@ namespace FinalProject.Data
             {
                 return null;
             }
+
+        }
+        public async Task<DeckCardMapping> GetDeckCardMappingAsync(int deckId, int cardId)
+        {
+            var mapping = _context.DeckCardMappings.FirstOrDefault(x => x.DeckId ==deckId && x.CardId == cardId);
+            return mapping;
+
+        }
+        public async Task<DeckCardMapping> UpsertDeckCardMappingAsync(DeckCardMapping deckCardMapping)
+        {
+            var mapping = _context.DeckCardMappings.FirstOrDefault(x => x.DeckId == deckCardMapping.DeckId && x.CardId == deckCardMapping.CardId);
+            if (mapping != null)
+            {
+                mapping.Count = deckCardMapping.Count;
+
+            }
+            else
+            {
+                mapping = new DeckCardMapping();
+                mapping.Count = 1;
+                mapping.CardId = deckCardMapping.CardId;
+                mapping.DeckId = deckCardMapping.DeckId;
+                _context.DeckCardMappings.Add(mapping);
+
+            }
+            await _context.SaveChangesAsync();
+            return mapping;
         }
     }
 }

@@ -10,5 +10,7 @@ namespace FinalProject.Data.Interfaces
     public interface IYGOProDeckAccess
     {
         public Task<List<Card>> SearchCardsAsync([FromQuery] string q);
+        public Task<Card> GetCardByNameAsync(string cardName);
+        public byte[] GetCardImage(CardImage cardImage);
     }
 }

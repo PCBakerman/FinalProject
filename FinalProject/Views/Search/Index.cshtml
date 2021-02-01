@@ -1,0 +1,100 @@
+﻿@model FinalProject.Models.ViewModels.SearchIndexViewModel 
+@{
+    ViewData["Title"] = "Search";
+}
+
+<div class="text-center">
+  @using (Html.BeginForm("Index","Search", FormMethod.Get))
+  {
+      @Html.EditorFor(model => model.Query)
+      <input type ="submit" name="submit" value="Search" />
+  }
+</div>
+<div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                   Name
+                </th>
+                <th>
+                    Type
+                </th>
+                <th>
+                    Description
+                </th>
+                <th>
+                    Attack
+                </th>
+                <th>
+                    Defence
+                </th>
+                <th>
+                    Level
+                </th>
+                <th>
+                    Race
+                </th>
+                <th>
+                    Attribute
+                </th>
+                <th>
+                    Archetype
+                </th>
+                <th>
+                    Link value
+                </th>
+                <th>
+                    LinkMarkers
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Results)
+            {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Type)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DescriptionDisplay)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AttackDisplay)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DefenseDisplay)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.LevelDisplay)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Race)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Attribute)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Archetype)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.LinkvalDisplay)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.LinkMarkers)
+                </td>
+                <td>
+                    <a asp-action="Details" asp-route-name="@item.Name" asp-route-query="@Model.Query">Details</a> 
+                </td>
+                <td>
+                    <a asp-action="AddCard" asp-route-name="@item.Name" asp-route-query="@Model.Query">Add To Collection</a>
+                </td>
+            </tr>
+            }
+        </tbody>
+    </table>
+</div>

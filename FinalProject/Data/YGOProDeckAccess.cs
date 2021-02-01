@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using FinalProject.Data.Interfaces;
 using FinalProject.Models;
@@ -31,6 +32,35 @@ namespace FinalProject.Data
 
             Console.WriteLine(response.Content);
             return cards;
+
+        }
+        public byte[] GetCardImage(CardImage cardImage)
+        {
+            var url = cardImage.ImageUrl;
+            var webClient = new WebClient();
+            byte[] imageBytes = webClient.DownloadData(url);
+
+            return imageBytes;
+        }
+        public async Task<Card> GetCardByNameAsync(string cardName)
+        {
+            var cards = new List<Card>();
+            
+            var client = new RestClient($"https://db.ygoprodeck.com/api/v7/cardinfo.php?name={cardName}");
+            
+            client.Timeout = -1;
+            var request = new RestRequest(Method.GET);
+            request.AddHeader("Cookie", "__cfduid=d13abaa4aab935e5fda6f7a9bbe67b31a1610472930");
+            IRestResponse response = client.Execute(request);
+            if (response.IsSuccessful)
+            {
+                YGOProDeckData data = JsonConvert.DeserializeObject<YGOProDeckData>(response.Content);
+                if (data != null)
+                {
+                    cards = YGOProDeckData.MapCardsFromData(data);
+                }
+            }
+            return cards.FirstOrDefault();
 
         }
     }

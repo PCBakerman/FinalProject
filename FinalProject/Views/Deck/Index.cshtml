@@ -1,0 +1,40 @@
+﻿@model FinalProject.Models.ViewModels.DeckIndexViewModel
+
+@{
+    ViewData["Title"] = "Decks";
+}
+
+<h1>Current Decks</h1>
+
+<p>
+    <a asp-action="Create">Add Deck</a>
+</p>
+<div>
+    <h4>Decks</h4>
+
+    <div style="display:flex; flex-wrap: wrap;">
+        @{
+            foreach (var item in Model.Decks)
+            {
+
+                string imgSrc;
+                if (item.ImageBytes != null)
+                {
+                    var base64 = Convert.ToBase64String(item.ImageBytes);
+                    imgSrc = String.Format("data:image/gif;base64,{0}", base64);
+                }
+                else
+                {
+                    //TODO replace imgSrc with default or not found placeholder
+                    imgSrc = "";
+                }
+                <div style="padding-left: 15px; padding-bottom: 15px">
+                    <img style="height: 350px" src="@imgSrc" />
+                    <p>@Html.DisplayFor(modelItem => item.DeckName)</p>
+
+                    @*need details page and way to adjust count*@
+                </div>
+            }
+        }
+    </div>
+</div>

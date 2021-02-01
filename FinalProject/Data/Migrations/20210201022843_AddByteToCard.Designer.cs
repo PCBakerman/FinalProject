@@ -4,14 +4,16 @@ using FinalProject.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace FinalProject.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210201022843_AddByteToCard")]
+    partial class AddByteToCard
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -166,9 +168,6 @@ namespace FinalProject.Data.Migrations
 
                     b.Property<string>("DeckName")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<byte[]>("ImageBytes")
-                        .HasColumnType("varbinary(max)");
 
                     b.Property<int>("UserInventoryId")
                         .HasColumnType("int");

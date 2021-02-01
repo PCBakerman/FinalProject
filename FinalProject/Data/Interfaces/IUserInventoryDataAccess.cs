@@ -11,5 +11,6 @@ namespace FinalProject.Data.Interfaces
         public Task<UserInventory> GetUserInventoryByUserAsync(string userId);
         public Task<UserInventory> GetInventoryAsync(int id);
         public Task<UserInventory> Upsert(UserInventory userInventory);
+        
     }
 }

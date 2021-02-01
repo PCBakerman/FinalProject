@@ -13,6 +13,6 @@ namespace FinalProject.Models
         public string DeckName { get; set; }
         public string DeckImage { get; set; }
         public List<DeckCardMapping> DeckCardMappings { get; set; }
-
+        public byte[] ImageBytes { get; set; }
     }
 }

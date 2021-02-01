@@ -28,6 +28,11 @@ namespace FinalProject.Data
             var card = _context.Cards.FirstOrDefault(x => x.Id == id);
             return card;
         }
+        public async Task<Card> GetCardByNameAsync(string name)
+        {
+            var card = _context.Cards.FirstOrDefault(x => x.Name == name);
+            return card;
+        }
 
         public async Task<Card> Upsert(Card card)
         {
@@ -59,6 +64,7 @@ namespace FinalProject.Data
                     }
                     else
                     {
+                        card.Id = 0;
                         _context.Cards.Add(card);
                         await _context.SaveChangesAsync();
                         return card;
@@ -75,6 +81,42 @@ namespace FinalProject.Data
             {
                 return null;
             }
+        }
+        public async Task<List<InventoryCardMapping>> GetCardMappingsForUserAsync(int userInventoryId)
+        {
+            var mappings = _context.InventoryCardMappings.Where(x => x.UserInventoryId == userInventoryId).ToList();
+            foreach (var mapping in mappings)
+            {
+                mapping.Card = await GetCardAsync(mapping.CardId);
+            }
+            return mappings;
+
+        }
+        public async Task<InventoryCardMapping> UpsertCardMappingAsync(InventoryCardMapping inventoryCardMapping)
+        {
+            var mapping = _context.InventoryCardMappings.FirstOrDefault(x => x.UserInventoryId == inventoryCardMapping.UserInventoryId && x.CardId == inventoryCardMapping.CardId);
+            if(mapping != null)
+            {
+                mapping.Count = inventoryCardMapping.Count;
+
+            }
+            else
+            {
+                mapping = new InventoryCardMapping();
+                mapping.Count = 1;
+                mapping.CardId = inventoryCardMapping.CardId;
+                mapping.UserInventoryId = inventoryCardMapping.UserInventoryId;
+                _context.InventoryCardMappings.Add(mapping);
+
+            }
+            await _context.SaveChangesAsync();
+            return mapping;     
+        }
+        public async Task<InventoryCardMapping> GetSpecificCardMappingForUserAsync(int userInventoryId, int cardId)
+        {
+            var mapping = _context.InventoryCardMappings.FirstOrDefault(x => x.UserInventoryId == userInventoryId && x.CardId == cardId);
+            return mapping;
+
         }
     }
 }

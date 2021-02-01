@@ -1,0 +1,160 @@
+﻿@model FinalProject.Models.ViewModels.DeckDetailsViewModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+<h4>Deck Details</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Deck.DeckName" class="control-label"></label>
+                <input asp-for="Deck.DeckName" class="form-control" />
+                <span asp-validation-for="Deck.DeckName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+<h4>Deck Cards</h4>
+<hr />
+<div class="row">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    Name
+                </th>
+                <th>
+                    Type
+                </th>
+                <th>
+                    Attack
+                </th>
+                <th>
+                    Defense
+                </th>
+                <th>
+                    Level
+                </th>
+                <th>
+                    Race
+                </th>
+                <th>
+                    Attribute
+                </th>
+                <th>
+                    Archetype
+                </th>
+                <th>
+                    Linkval
+                </th>
+                <th>
+                    LinkMarkers
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Deck.DeckCardMappings)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Card.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Card.Type)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Card.AttackDisplay)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Card.DefenseDisplay)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Card.LevelDisplay)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Card.Race)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Card.Attribute)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Card.Archetype)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Card.LinkvalDisplay)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Card.LinkMarkers)
+                    </td>
+                    <td>
+                        <a asp-action="Details" asp-route-id="@item.Card.Id">Details</a>
+                    </td>
+                    <td>
+                        <a asp-action="RemoveCard" asp-route-deckid="@Model.Deck.Id" asp-route-cardid="@item.Card.Id">-</a>
+                        @Html.DisplayFor(modelItem => item.Count)
+                        <a asp-action="AddCard" asp-route-deckid="@Model.Deck.Id" asp-route-cardid="@item.Card.Id">+</a>
+                    </td>
+                </tr>
+            }
+            <tr>
+                <td>
+                    <button id="btnShowModal" type="button"
+                            class="btn btn-primary">
+                        Add Card
+                    </button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<div>
+    <a asp-action="Index">Back</a>
+</div>
+<div class="modal fade" tabindex="-1" id="loginModal"
+     data-keyboard="false" data-backdrop="static">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Add Card</h4>
+                </div>
+                <form asp-action="AddCard" asp-controller="Deck" method="post">
+                    <div class="modal-body">
+                        <input asp-for="@Model.DeckId" type ="hidden" value="@Model.Deck.Id"/>
+
+                        <select asp-for="@Model.CardIdToAdd" asp-items="Model.Cards"></select>
+                    </div>
+                    <div class="modal-footer">
+                        <input type="submit" class="btn btn-primary" value="Add" />
+                        <button type="button" id="btnHideModal" class="btn btn-secondary">
+                            Cancel
+                        </button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js">
+
+</script>
+<script src="bootstrap/js/bootstrap.min.js"></script>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $("#btnShowModal").click(function () {
+            $("#loginModal").modal('show');
+        });
+
+        $("#btnHideModal").click(function () {
+            $("#loginModal").modal('hide');
+        });
+    });
+</script>

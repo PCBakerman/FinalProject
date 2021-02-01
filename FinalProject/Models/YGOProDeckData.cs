@@ -44,6 +44,7 @@ namespace FinalProject.Models
                             cardsets.Add(mappedcardset);
 
                         }
+                        card.CardSets = cardsets;
                     }
                     else
                     {
@@ -61,6 +62,7 @@ namespace FinalProject.Models
                             mappedcardimage.ImageUrlSmall = cardimage.image_url_small;
                             cardimages.Add(mappedcardimage);
                         }
+                        card.CardImages = cardimages;
                     }
                     else
                     {
@@ -83,19 +85,18 @@ namespace FinalProject.Models
                             cardprices.Add(mappedcardprice);
 
                         }
+                        card.CardPrices = cardprices;
                     }
-
-
                     else
                     {
                         card.CardPrices = new List<CardPrice>();
                     }
                         cards.Add(card);
-                    }
                 }
-                return cards;
             }
+            return cards;
         }
+    }
     
     
     public class YGOCardSet    {

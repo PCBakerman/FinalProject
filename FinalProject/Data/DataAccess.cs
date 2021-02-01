@@ -17,6 +17,7 @@ namespace FinalProject.Data
             CardDataAccess = new CardDataAccess(context);
             DeckDataAccess = new DeckDataAccess(context);
             UserInventoryDataAccess = new UserInventoryDataAccess(context);
+            
         }
     }
 }
