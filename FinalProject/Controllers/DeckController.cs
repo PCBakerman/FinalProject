@@ -38,15 +38,34 @@ namespace FinalProject.Controllers
                 return View(model);
             }
         }
-
+        public async Task<IActionResult> CardDetails(string cardId, string deckId)
+        {
+            var model = new DeckCardDetailsViewModel();
+            int convertedCardId;
+            int convertedDeckId;  
+            if (int.TryParse(cardId, out convertedCardId) && int.TryParse(deckId, out convertedDeckId))
+            {
+                var card = await _DataAccess.CardDataAccess.GetCardAsync(convertedCardId);
+                model.Card = card;
+                model.DeckId = deckId;
+                return View("CardDetails", model);
+            }
+            else
+            {
+                var detailsModel = new DeckDetailsViewModel();
+                detailsModel.DeckId = deckId;
+                return RedirectToAction("Details", detailsModel);
+            }
+           
+        }
         // GET: DeckController/Details/5
         public ActionResult Details(int id)
         {
             return View();
         }
 
-        // GET: DeckController/Create
-        public async Task<ActionResult> Create(DeckDetailsViewModel model)
+        // GET: DeckController/Edit
+        public async Task<ActionResult> Edit(DeckDetailsViewModel model)
         {
             
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // will give the user's userId
@@ -109,36 +128,31 @@ namespace FinalProject.Controllers
 
                 }
             }
-            return RedirectToAction("Create", model);
+            return RedirectToAction("Edit", model);
         }
-        // POST: DeckController/Create
+        // POST: DeckController/Edit
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public async Task<IActionResult> Edit(IFormCollection collection)
         {
             try
             {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
+                var deckName = collection["Deck.DeckName"];
+                var buildPrupose = collection["Deck.BuildPurpose"];
+                var stringdeckId = collection["Deck.Id"];
+                int deckId;
+                if (int.TryParse(stringdeckId, out deckId))
+                {
+                    var deck = await _DataAccess.DeckDataAccess.GetDeckAsync(deckId);
+                    deck.DeckName = deckName;
+                    deck.BuildPurpose = buildPrupose;
+                    await _DataAccess.DeckDataAccess.Upsert(deck);
+                    var model = new DeckDetailsViewModel();
+                    model.DeckId = stringdeckId;
 
-        // GET: DeckController/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
-
-        // POST: DeckController/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
-        {
-            try
-            {
+                    return RedirectToAction("Edit", model);
+                }
+                    
                 return RedirectToAction(nameof(Index));
             }
             catch

@@ -1,21 +1,25 @@
 ﻿@model FinalProject.Models.ViewModels.DeckDetailsViewModel
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Edit Deck";
 }
 <h4>Deck Builder</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
+        <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Deck.DeckName" class="control-label"></label>
                 <input asp-for="Deck.DeckName" class="form-control" />
-                <span asp-validation-for="Deck.DeckName" class="text-danger"></span>
+                <span asp-validation-for="Deck.BuildPurpose" class="text-danger"></span>
+                <label asp-for="Deck.BuildPurpose" class="control-label"></label>
+                <input asp-for="Deck.BuildPurpose" class="form-control" />
+                <span asp-validation-for="Deck.BuildPurpose" class="text-danger"></span>
+                <input asp-for="Deck.Id" type="hidden" value="@Model.Deck.Id" />
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Save Changes" class="btn btn-primary" />
             </div>
         </form>
     </div>
@@ -94,8 +98,8 @@
                         @Html.DisplayFor(modelItem => item.Card.LinkMarkers)
                     </td>
                     <td>
-                        <a asp-action="Details" asp-route-id="@item.Card.Id">Details</a>
-                    </td>
+                        <a asp-action="Details" asp-route-cardid="@item.Card.Id">Details</a>
+                    </td>   
                     <td>
                         <a asp-action="RemoveCard" asp-route-deckid="@Model.Deck.Id" asp-route-cardid="@item.Card.Id">-</a>
                         @Html.DisplayFor(modelItem => item.Count)

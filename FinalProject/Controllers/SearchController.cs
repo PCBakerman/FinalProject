@@ -80,7 +80,7 @@ namespace FinalProject.Controllers
         {
             var model = new SearchDetailsViewModel();
             model.Query = query;
-            model.Name = name;
+            model.Name = name;      
             var cardData = await _DataAccess.CardDataAccess.GetCardByNameAsync(name);
             if(cardData == null)
             {
