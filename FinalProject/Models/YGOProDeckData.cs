@@ -21,6 +21,7 @@ namespace FinalProject.Models
                     card.Id = datum.id;
                     card.Name = datum.name;
                     card.Description = datum.desc;
+                    card.Type = datum.type;
                     card.Attack = datum.atk;
                     card.Defence = datum.def;
                     card.Level = datum.level;

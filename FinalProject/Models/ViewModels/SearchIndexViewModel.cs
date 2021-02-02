@@ -9,5 +9,6 @@ namespace FinalProject.Models.ViewModels
     {
         public string Query { get; set; }
         public List<Card> Results { get; set; }
+        public List<Deck> Decks { get; set; }
     }
 }

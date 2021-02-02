@@ -15,15 +15,24 @@ namespace FinalProject.Controllers
     {
         private IYGOProDeckAccess _YGOProDeckAccess;
         private IDataAccess _DataAccess;
+        
+
         public SearchController(IYGOProDeckAccess yGOProDeckAccess, IDataAccess dataAccess)
         {
             _YGOProDeckAccess = yGOProDeckAccess;
             _DataAccess = dataAccess;
-
         }
         public async Task<IActionResult> Index(string Query)
         {
             var model = new SearchIndexViewModel();
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (!string.IsNullOrWhiteSpace(userId))
+            {
+                var userInventory = await _DataAccess.UserInventoryDataAccess.GetUserInventoryByUserAsync(userId);
+                var decks = await _DataAccess.DeckDataAccess.GetDecksByUserAsync(userInventory.Id);
+                model.Decks = decks;
+
+            }
             if (!string.IsNullOrWhiteSpace(Query))
             {
                 model.Query = Query;
@@ -41,10 +50,18 @@ namespace FinalProject.Controllers
         public async Task<IActionResult> Details(string Name, string query)
         {
             var model = new SearchDetailsViewModel();
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (!string.IsNullOrWhiteSpace(userId))
+            {
+                var userInventory = await _DataAccess.UserInventoryDataAccess.GetUserInventoryByUserAsync(userId);
+                var decks = await _DataAccess.DeckDataAccess.GetDecksByUserAsync(userInventory.Id);
+                model.Decks = decks;
+
+            }
             model.Query = query;
             if (!string.IsNullOrWhiteSpace(Name))
             {
-               
+                model.Name = Name;
                 model.Result = await _YGOProDeckAccess.GetCardByNameAsync(Name);
 
             }
@@ -93,6 +110,56 @@ namespace FinalProject.Controllers
                 cardmapping.UserInventoryId = userInventory.Id;
                 cardmapping.Count = 1;
                 await _DataAccess.CardDataAccess.UpsertCardMappingAsync(cardmapping);
+            }
+            return RedirectToAction("Details", model);
+        }
+        [HttpPost]
+        public async Task<IActionResult> AddToDeck(SearchDetailsViewModel model)
+        {
+            
+            int deckId;
+            if (int.TryParse(model.DeckId, out deckId))
+            {
+                var card = await _DataAccess.CardDataAccess.GetCardByNameAsync(model.Name);
+                if (card == null)
+                {
+                    var apiCard = await _YGOProDeckAccess.GetCardByNameAsync(model.Name);
+                    if (apiCard.CardImages != null && apiCard.CardImages.Count > 0)
+                    {
+                        apiCard.ImageBytes = _YGOProDeckAccess.GetCardImage(apiCard.CardImages.First());
+                    }
+                    card = await _DataAccess.CardDataAccess.Upsert(apiCard);
+                }
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // will give the user's userId
+                if (string.IsNullOrWhiteSpace(userId))
+                {
+                    return RedirectToAction("Details", model);
+                }
+                var userInventory = await _DataAccess.UserInventoryDataAccess.GetUserInventoryByUserAsync(userId);
+                var userCardMapping = _DataAccess.CardDataAccess.GetSpecificCardMappingForUserAsync(userInventory.Id, card.Id);
+                if (userCardMapping == null)
+                {
+                    var cardmapping = new InventoryCardMapping();
+                    cardmapping.CardId = card.Id;
+                    cardmapping.UserInventoryId = userInventory.Id;
+                    cardmapping.Count = 1;
+                    await _DataAccess.CardDataAccess.UpsertCardMappingAsync(cardmapping);
+                }
+                var mapping = await _DataAccess.DeckDataAccess.GetDeckCardMappingAsync(deckId, card.Id);
+                if (mapping != null)
+                {
+                    mapping.Count++;
+                    await _DataAccess.DeckDataAccess.UpsertDeckCardMappingAsync(mapping);
+                }
+                else
+                {
+                    mapping = new DeckCardMapping();
+                    mapping.CardId = card.Id;
+                    mapping.DeckId = deckId;
+                    mapping.Count = 1;
+                    await _DataAccess.DeckDataAccess.UpsertDeckCardMappingAsync(mapping);
+
+                }
             }
             return RedirectToAction("Details", model);
         }

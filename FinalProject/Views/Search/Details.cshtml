@@ -79,7 +79,57 @@
     </dl>
 </div>
 <div>
+    <button id="btnShowModal" type="button"
+            class="btn btn-primary">
+        Add To Deck
+    </button>
+</div>
+<div>
     <a asp-action="Index" asp-route-query="@Model.Query">Back to List</a>
 </div>
+<div class="modal fade" tabindex="-1" id="loginModal"
+     data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Add Card</h4>
+            </div>
+            <form asp-action="AddToDeck" asp-controller="Search" method="post">
+                <div class="modal-body">
+                    <input asp-for="@Model.CardId" type="hidden" value="@Model.Result.Id" />
+                    <input asp-for="@Model.Query" type="hidden" value="@Model.Query" />
+                    <input asp-for="@Model.Name" type="hidden" value="@Model.Name" />
+                    <select asp-for="@Model.DeckId" asp-items="Model.DeckSelector"></select>
+                </div>
+                <div class="modal-footer">
+                    <input type="submit" class="btn btn-primary" value="Add" />
+                    <button type="button" id="btnHideModal" class="btn btn-secondary">
+                        Cancel
+                    </button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js">
+
+</script>
+<script src="bootstrap/js/bootstrap.min.js"></script>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $("#btnShowModal").click(function () {
+            $("#loginModal").modal('show');
+        });
+
+        $("#btnHideModal").click(function () {
+            $("#loginModal").modal('hide');
+        });
+    });
+</script>
+
+
 
 
