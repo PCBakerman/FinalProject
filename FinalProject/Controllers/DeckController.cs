@@ -54,9 +54,16 @@ namespace FinalProject.Controllers
             {
                 var detailsModel = new DeckDetailsViewModel();
                 detailsModel.DeckId = deckId;
-                return RedirectToAction("Details", detailsModel);
+                return RedirectToAction("Edit", detailsModel);
             }
            
+        }
+        public ActionResult RedirectToDeck(string deckId)
+        {
+            var model = new DeckDetailsViewModel();
+            model.DeckId = deckId;
+            return RedirectToAction("Edit", model);
+
         }
         // GET: DeckController/Details/5
         public ActionResult Details(int id)

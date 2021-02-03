@@ -98,7 +98,7 @@
                         @Html.DisplayFor(modelItem => item.Card.LinkMarkers)
                     </td>
                     <td>
-                        <a asp-action="Details" asp-route-cardid="@item.Card.Id">Details</a>
+                        <a asp-action="CardDetails" asp-route-cardid="@item.Card.Id" asp-route-deckid="@Model.Deck.Id">Details</a>
                     </td>   
                     <td>
                         <a asp-action="RemoveCard" asp-route-deckid="@Model.Deck.Id" asp-route-cardid="@item.Card.Id">-</a>
