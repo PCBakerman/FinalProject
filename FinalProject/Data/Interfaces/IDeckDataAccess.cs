@@ -16,6 +16,6 @@ namespace FinalProject.Data.Interfaces
         public Task<List<Deck>> GetDecksByUserAsync(int userInventoryId);
         public Task<DeckCardMapping> GetDeckCardMappingAsync(int deckId, int cardId);
         public Task<DeckCardMapping> UpsertDeckCardMappingAsync(DeckCardMapping deckCardMapping);
-        
+        public Task<bool> DeleteDeckAsync(int id);
     }
 }

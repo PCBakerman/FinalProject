@@ -86,7 +86,7 @@ namespace FinalProject.Data
         }
         public async Task<DeckCardMapping> GetDeckCardMappingAsync(int deckId, int cardId)
         {
-            var mapping = _context.DeckCardMappings.FirstOrDefault(x => x.DeckId ==deckId && x.CardId == cardId);
+            var mapping = _context.DeckCardMappings.FirstOrDefault(x => x.DeckId == deckId && x.CardId == cardId);
             return mapping;
 
         }
@@ -110,17 +110,22 @@ namespace FinalProject.Data
             await _context.SaveChangesAsync();
             return mapping;
         }
-        public async Task<Deck> DeleteDeck(int id, Deck deck)
+        public async Task<bool> DeleteDeckAsync(int id)
         {
-            Deck deck = _context.Deck.FirstOrDefault(id);
-
-            if (deck == null)
-                return ("Details");
+            var deck = _context.Decks.FirstOrDefault(x => x.Id == id);
+            if (deck != null)
+            {
+                // deck exists so remove it
+                _context.Decks.Remove(deck);
+                await _context.SaveChangesAsync();
+                // return true so we know it was deleted
+                return true;
+            }
             else
-                return View(deck);
+            {
+                // deck not found so return false so we know it wasn't deleted
+                return false;
+            }
         }
-    }
-
-
     }
 }

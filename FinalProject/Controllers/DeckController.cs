@@ -243,31 +243,25 @@ namespace FinalProject.Controllers
 
 
         // GET: DeckController/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public ActionResult Delete(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var deck = _DataAccess.DeckDataAccess.GetDeckAsync.Delete(id)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (deck == null)
-            {
-                return NotFound();
-            }
-
-            return View(deck);
-
+            return View();
         }
 
 
         // POST: DeckController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Delete(int id)
+        public ActionResult Delete(int id, IFormCollection collection)
         {
-            return View();
+            try
+            {
+                return RedirectToAction(nameof(Index));
+            }
+            catch
+            {
+                return View();
+            }
         }
     }
 }
