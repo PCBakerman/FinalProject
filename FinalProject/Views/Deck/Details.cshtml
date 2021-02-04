@@ -1,0 +1,112 @@
+﻿@model FinalProject.Models.ViewModels.DeckDetailsViewModel
+
+@{
+    ViewData["Title"] = "Edit Deck";
+}
+<h4>Deck Builder</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <div>
+            <p>
+                <h4>
+                    @Html.DisplayNameFor(model => model.Deck.DeckName)
+                </h4>
+                @Html.DisplayFor(model => model.Deck.DeckName)
+            </p>
+            <p>
+                <h4>
+                    @Html.DisplayNameFor(model => model.Deck.BuildPurpose)
+                </h4>
+                @Html.DisplayFor(model => model.Deck.BuildPurpose)
+            </p>
+        </div>
+    </div>
+</div>
+<h4>Deck Cards</h4>
+<hr />
+<div class="row">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    Name
+                </th>
+                <th>
+                    Type
+                </th>
+                <th>
+                    Attack
+                </th>
+                <th>
+                    Defense
+                </th>
+                <th>
+                    Level
+                </th>
+                <th>
+                    Race
+                </th>
+                <th>
+                    Attribute
+                </th>
+                <th>
+                    Archetype
+                </th>
+                <th>
+                    Linkval
+                </th>
+                <th>
+                    LinkMarkers
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Deck.DeckCardMappings)
+            {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Card.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Card.Type)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Card.AttackDisplay)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Card.DefenseDisplay)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Card.LevelDisplay)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Card.Race)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Card.Attribute)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Card.Archetype)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Card.LinkvalDisplay)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Card.LinkMarkers)
+                </td>
+                <td>
+                    <a asp-action="CardDetails" asp-route-cardid="@item.Card.Id" asp-route-deckid="@Model.Deck.Id">Details</a>
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Count)
+                </td>
+            </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<div>
+    <a asp-action="Index">Back</a>
+</div>

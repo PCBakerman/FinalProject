@@ -30,7 +30,8 @@
                 }
                 <div style="padding-left: 15px; padding-bottom: 15px">
                     <img style="height: 350px" src="@imgSrc" />
-                    <p>@Html.DisplayFor(modelItem => item.DeckName)</p>
+                    <a asp-action="Details" asp-route-controller="Deck" asp-route-id="@item.Id">@Html.DisplayFor(modelItem => item.DeckName)</a>
+                    
 
                     @*need details page and way to adjust count*@
                 </div>

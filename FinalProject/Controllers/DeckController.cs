@@ -66,9 +66,34 @@ namespace FinalProject.Controllers
 
         }
         // GET: DeckController/Details/5
-        public ActionResult Details(int id)
+        public async Task<IActionResult> Details(int id)
         {
-            return View();
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // will give the user's userId
+            if (string.IsNullOrWhiteSpace(userId))
+            {
+                return RedirectToAction("Home", "Index");
+            }
+            else
+            {
+                var model = new DeckDetailsViewModel();
+                model.Deck = await _DataAccess.DeckDataAccess.GetDeckAsync(id);
+                if (model.Deck == null)
+                {
+                    model = null;
+                }
+                var userInventory = await _DataAccess.UserInventoryDataAccess.GetUserInventoryByUserAsync(userId);
+                var cards = await _DataAccess.CardDataAccess.GetCardMappingsForUserAsync(userInventory.Id);
+                if (model == null)
+                {
+                    model = new DeckDetailsViewModel();
+                    var deck = new Deck();
+                    deck.UserInventoryId = userInventory.Id;
+                    deck = await _DataAccess.DeckDataAccess.Upsert(deck);
+                    model.Deck = deck;
+                }
+                model.CardMappings = cards;
+                return View(model);
+            }
         }
 
         // GET: DeckController/Edit
@@ -95,7 +120,7 @@ namespace FinalProject.Controllers
                     }
                     else
                     {
-                        model = null;
+                            model = null;
                     }   
                 }
                 var userInventory = await _DataAccess.UserInventoryDataAccess.GetUserInventoryByUserAsync(userId);
@@ -110,6 +135,36 @@ namespace FinalProject.Controllers
                 }
                 model.CardMappings = cards;
                 return View(model);
+            }
+        }
+        // POST: DeckController/Edit
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(IFormCollection collection)
+        {
+            try
+            {
+                var deckName = collection["Deck.DeckName"];
+                var buildPrupose = collection["Deck.BuildPurpose"];
+                var stringdeckId = collection["Deck.Id"];
+                int deckId;
+                if (int.TryParse(stringdeckId, out deckId))
+                {
+                    var deck = await _DataAccess.DeckDataAccess.GetDeckAsync(deckId);
+                    deck.DeckName = deckName;
+                    deck.BuildPurpose = buildPrupose;
+                    await _DataAccess.DeckDataAccess.Upsert(deck);
+                    var model = new DeckDetailsViewModel();
+                    model.DeckId = stringdeckId;
+
+                    return RedirectToAction("Edit", model);
+                }
+
+                return RedirectToAction(nameof(Index));
+            }
+            catch
+            {
+                return View();
             }
         }
         [HttpPost]
@@ -137,56 +192,82 @@ namespace FinalProject.Controllers
             }
             return RedirectToAction("Edit", model);
         }
-        // POST: DeckController/Edit
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(IFormCollection collection)
+        public async Task<IActionResult> IncreaseCardCount(string dId, string cId)
         {
-            try
+            int cardId;
+            int deckId;
+            if (int.TryParse(cId, out cardId) && int.TryParse(dId, out deckId))
             {
-                var deckName = collection["Deck.DeckName"];
-                var buildPrupose = collection["Deck.BuildPurpose"];
-                var stringdeckId = collection["Deck.Id"];
-                int deckId;
-                if (int.TryParse(stringdeckId, out deckId))
+                var mapping = await _DataAccess.DeckDataAccess.GetDeckCardMappingAsync(deckId, cardId);
+                if (mapping != null)
                 {
-                    var deck = await _DataAccess.DeckDataAccess.GetDeckAsync(deckId);
-                    deck.DeckName = deckName;
-                    deck.BuildPurpose = buildPrupose;
-                    await _DataAccess.DeckDataAccess.Upsert(deck);
-                    var model = new DeckDetailsViewModel();
-                    model.DeckId = stringdeckId;
-
-                    return RedirectToAction("Edit", model);
+                    mapping.Count++;
+                    await _DataAccess.DeckDataAccess.UpsertDeckCardMappingAsync(mapping);
                 }
-                    
-                return RedirectToAction(nameof(Index));
+                else
+                {
+                    mapping = new DeckCardMapping();
+                    mapping.CardId = cardId;
+                    mapping.DeckId = deckId;
+                    mapping.Count = 1;
+                    await _DataAccess.DeckDataAccess.UpsertDeckCardMappingAsync(mapping);
+
+                }
+                
             }
-            catch
-            {
-                return View();
-            }
+            var model = new DeckDetailsViewModel();
+            model.DeckId = dId;
+            return RedirectToAction("Edit", model);
         }
+        public async Task<IActionResult> DecreaseCardCount(string dId, string cId)
+        {
+            int cardId;
+            int deckId;
+            if (int.TryParse(cId, out cardId) && int.TryParse(dId, out deckId))
+            {
+                var mapping = await _DataAccess.DeckDataAccess.GetDeckCardMappingAsync(deckId, cardId);
+                if (mapping != null)
+                {
+                    mapping.Count--;
+                    if (mapping.Count < 0)
+                    {
+                        mapping.Count = 0;
+                    }
+                    await _DataAccess.DeckDataAccess.UpsertDeckCardMappingAsync(mapping);
+                }
+            }
+            var model = new DeckDetailsViewModel();
+            model.DeckId = dId;
+            return RedirectToAction("Edit", model);
+        }
+
 
         // GET: DeckController/Delete/5
-        public ActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int? id)
         {
-            return View();
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var deck = _DataAccess.DeckDataAccess.GetDeckAsync.Delete(id)
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (deck == null)
+            {
+                return NotFound();
+            }
+
+            return View(deck);
+
         }
+
 
         // POST: DeckController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public async Task<ActionResult> Delete(int id)
         {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            return View();
         }
     }
 }

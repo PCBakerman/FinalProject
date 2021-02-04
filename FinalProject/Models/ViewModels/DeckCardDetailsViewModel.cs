@@ -9,5 +9,6 @@ namespace FinalProject.Models.ViewModels
     {
         public Card Card { get; set; }
         public string DeckId { get; set; }
+       
     }
 }

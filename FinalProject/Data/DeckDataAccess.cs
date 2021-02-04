@@ -110,5 +110,17 @@ namespace FinalProject.Data
             await _context.SaveChangesAsync();
             return mapping;
         }
+        public async Task<Deck> DeleteDeck(int id, Deck deck)
+        {
+            Deck deck = _context.Deck.FirstOrDefault(id);
+
+            if (deck == null)
+                return ("Details");
+            else
+                return View(deck);
+        }
+    }
+
+
     }
 }

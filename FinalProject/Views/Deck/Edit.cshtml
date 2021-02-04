@@ -101,9 +101,9 @@
                         <a asp-action="CardDetails" asp-route-cardid="@item.Card.Id" asp-route-deckid="@Model.Deck.Id">Details</a>
                     </td>   
                     <td>
-                        <a asp-action="RemoveCard" asp-route-deckid="@Model.Deck.Id" asp-route-cardid="@item.Card.Id">-</a>
+                        <a asp-action="DecreaseCardCount" asp-route-dId="@Model.Deck.Id" asp-route-cId="@item.Card.Id">-</a>
                         @Html.DisplayFor(modelItem => item.Count)
-                        <a asp-action="AddCard" asp-route-deckid="@Model.Deck.Id" asp-route-cardid="@item.Card.Id">+</a>
+                        <a asp-action="IncreaseCardCount" asp-route-dId="@Model.Deck.Id" asp-route-cId="@item.Card.Id">+</a>
                     </td>
                 </tr>
             }

@@ -27,7 +27,8 @@
                 }
                 <div style="padding-left: 15px; padding-bottom: 15px">
                     <img style="height: 350px" src="@imgSrc" />
-                    <p>@Html.DisplayFor(modelItem => item.DeckName)</p>
+
+                    <a asp-action="Details" asp-route-controller="Deck" asp-route-id="@item.Id">@Html.DisplayFor(modelItem => item.DeckName)</a>
 
                     @*need details page and way to adjust count*@
                 </div>
@@ -39,32 +40,32 @@
 <div>
     <h4>Cards</h4>
 
-    <div style="display:flex; flex-wrap: wrap;">
-        @{
-            foreach (var item in Model.CardMappings)
-            {
+        <div style="display:flex; flex-wrap: wrap;">
+            @{
+                foreach (var item in Model.CardMappings)
+                {
 
-                string imgSrc;
-                if (item.Card?.ImageBytes != null)
-                {
-                    var base64 = Convert.ToBase64String(item.Card.ImageBytes);
-                    imgSrc = String.Format("data:image/gif;base64,{0}", base64);
+                    string imgSrc;
+                    if (item.Card?.ImageBytes != null)
+                    {
+                        var base64 = Convert.ToBase64String(item.Card.ImageBytes);
+                        imgSrc = String.Format("data:image/gif;base64,{0}", base64);
+                    }
+                    else
+                    {
+                        //TODO replace imgSrc with default or not found placeholder
+                        imgSrc = "";
+                    }
+                    <div style="padding-left: 15px; padding-bottom: 15px">
+                        <img style="height: 350px" src="@imgSrc" />
+                        <p>@Html.DisplayFor(modelItem => item.Card.Name)</p>
+                        <p>
+                            Cards In Collection: @Html.DisplayFor(modelItem => item.Count)
+                        </p>
+                        @*need details page and way to adjust count*@
+                    </div>
                 }
-                else
-                {
-                    //TODO replace imgSrc with default or not found placeholder
-                    imgSrc = "";
-                }
-                <div style="padding-left: 15px; padding-bottom: 15px">
-                    <img style="height: 350px" src="@imgSrc" />
-                    <p>@Html.DisplayFor(modelItem => item.Card.Name)</p>
-                    <p>
-                        Cards In Collection: @Html.DisplayFor(modelItem => item.Count)
-                    </p>
-                    @*need details page and way to adjust count*@
-                </div>
             }
-        }
-    </div>
+        </div>
 </div>
 <div></div>
