@@ -22,6 +22,31 @@
             </p>
         </div>
     </div>
+    <div class="col-md-4">
+        @{
+
+            string imgSrc;
+            if (Model.Deck.ImageBytes != null)
+            {
+                var base64 = Convert.ToBase64String(Model.Deck.ImageBytes);
+                imgSrc = String.Format("data:image/gif;base64,{0}", base64);
+            }
+            else
+            {
+                if (Model.DefaultImageBytes != null)
+                {
+                    var base64 = Convert.ToBase64String(Model.DefaultImageBytes);
+                    imgSrc = String.Format("data:image/gif;base64,{0}", base64);
+                }
+                else
+                {
+                    imgSrc = "";
+                }
+                imgSrc = "https://static.giantbomb.com/uploads/original/9/95666/1878961-pik.gif";
+            }
+
+        }
+    </div>
 </div>
 <h4>Deck Cards</h4>
 <hr />
@@ -108,5 +133,7 @@
     </table>
 </div>
 <div>
+    <a asp-action="Edit" asp-route-deckid="@Model.Deck.Id">Edit</a>
+    <a asp-action="Delete" asp-route-id="@Model.Deck.Id">Delete</a>
     <a asp-action="Index">Back</a>
 </div>

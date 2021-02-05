@@ -1,0 +1,11 @@
+﻿@model FinalProject.Models.ViewModels.TradeLimitExceededViewModel
+
+@{
+    ViewData["Title"] = "Exceeded TradeLimit";
+}
+
+<h3>Trade Limit Exceeded</h3>
+
+<p>You currently have @Model.CurrentTradeCount active trade listings which is more than your limit of @Model.Limit listings. </p>
+<p>You can increase your trade limit by getting a higher Life Points rating.</p>
+<a asp-action="AcceptTradeLimit" asp-route-source="@Model.Source">Go Back</a>

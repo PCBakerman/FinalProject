@@ -19,7 +19,10 @@ namespace FinalProject.Controllers
         }
         public async Task<IActionResult> Index()
         {
+            var defaultImage = await _DataAccess.DefaultImageDataAccess.GetDefaultImageByIdBytesAync(1);
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // will give the user's userId
+            var tradeListings = await _DataAccess.TradeDataAccess.GetTradeListingsByUser(userId);
+            var rating = await _DataAccess.TradeDataAccess.GetUserRating(userId);
             var userName = User.FindFirstValue(ClaimTypes.Name);
             var userInventory = await _DataAccess.UserInventoryDataAccess.GetUserInventoryByUserAsync(userId); 
             if(userInventory == null)
@@ -33,6 +36,9 @@ namespace FinalProject.Controllers
             model.UserInventory = userInventory;
             model.CardMappings = await _DataAccess.CardDataAccess.GetCardMappingsForUserAsync(userInventory.Id);
             model.Decks = await _DataAccess.DeckDataAccess.GetDecksByUserAsync(userInventory.Id);
+            model.DefaultImageBytes = defaultImage;
+            model.TradeListings = tradeListings;
+            model.Rating = rating;
             return View(model);
         }
     }

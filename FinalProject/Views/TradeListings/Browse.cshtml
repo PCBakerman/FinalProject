@@ -1,0 +1,92 @@
+﻿@model IEnumerable<FinalProject.Models.TradeListing>
+
+@{
+    ViewData["Title"] = "Trade Listings";
+}
+
+<h1>Active Listings</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.ActionLink("Description", "Browse", new { sortOrder = ViewBag.DescSortParam })
+            </th>
+            <th>
+                @Html.ActionLink("Card", "Browse", new { sortOrder = ViewBag.NameSortParam })
+            </th>
+            <th>
+                @Html.ActionLink("Type", "Browse", new { sortOrder = ViewBag.TypeSortParam })
+            </th>
+            <th>
+                @Html.ActionLink("Level", "Browse", new { sortOrder = ViewBag.LevelSortParam })
+            </th>
+            <th>
+                @Html.ActionLink("Attack", "Browse", new { sortOrder = ViewBag.AttackSortParam })
+            </th>
+            <th>
+                @Html.ActionLink("Defense", "Browse", new { sortOrder = ViewBag.DefenseSortParam })
+            </th>
+            <th>
+                @Html.ActionLink("Race", "Browse", new { sortOrder = ViewBag.RaceSortParam })
+            </th>
+            <th>
+                @Html.ActionLink("Attribute", "Browse", new { sortOrder = ViewBag.AttributeSortParam })
+            </th>
+            <th>
+                @Html.ActionLink("Link Value", "Browse", new { sortOrder = ViewBag.LinkValSortParam })
+            </th>
+            <th>
+                @Html.ActionLink("User", "Browse", new { sortOrder = ViewBag.UserSortParam })
+            </th>
+            <th>
+                @Html.ActionLink("Rating", "Browse", new { sortOrder = ViewBag.RatingSortParam })
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Card.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Card.Type)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Card.LevelDisplay)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Card.AttackDisplay)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Card.DefenseDisplay)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Card.Race)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Card.Attribute)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Card.Linkval)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Email)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UserRating)
+            </td>
+            <td>
+                <a asp-action="Details" asp-route-id="@item.Id">View Listing</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Make Offer</a>
+            </td>
+        </tr>
+        }
+    </tbody>
+</table>

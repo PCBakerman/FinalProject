@@ -1,93 +1,108 @@
-﻿@model IEnumerable<FinalProject.Models.Card>
+﻿@model IEnumerable<FinalProject.Models.InventoryCardMapping>
 
 @{
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h1>Cards in Collection</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Name)
+                @Html.DisplayNameFor(model => model.Card.Name)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Type)
+                @Html.DisplayNameFor(model => model.Card.Type)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Description)
+                @Html.DisplayNameFor(model => model.Card.Description)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Attack)
+                @Html.DisplayNameFor(model => model.Card.Attack)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Defence)
+                @Html.DisplayNameFor(model => model.Card.Defence)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Level)
+                @Html.DisplayNameFor(model => model.Card.Level)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Race)
+                @Html.DisplayNameFor(model => model.Card.Race)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Attribute)
+                @Html.DisplayNameFor(model => model.Card.Attribute)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Archetype)
+                @Html.DisplayNameFor(model => model.Card.Archetype)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Linkval)
+                @Html.DisplayNameFor(model => model.Card.Linkval)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.LinkMarkers)
+                @Html.DisplayNameFor(model => model.Card.LinkMarkers)
+            </th>
+            <th>
+                # in Collection
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
 @foreach (var item in Model) {
+        string imgSrc;
+        if (item.Card.ImageBytes != null)
+        {
+            var base64 = Convert.ToBase64String(item.Card.ImageBytes);
+            imgSrc = String.Format("data:image/gif;base64,{0}", base64);
+        }
+        else
+        {
+            imgSrc = "https://static.giantbomb.com/uploads/original/9/95666/1878961-pik.gif";
+        }
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Name)
+                <img style="height: 325px; width: 225px;" src="@imgSrc" />
+                <a asp-action="Details" asp-route-id="@item.Card.Id">@Html.DisplayFor(modelItem => item.Card.Name)</a>
+
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Type)
+                @Html.DisplayFor(modelItem => item.Card.Type)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Description)
+                @Html.DisplayFor(modelItem => item.Card.DescriptionDisplay)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Attack)
+                @Html.DisplayFor(modelItem => item.Card.AttackDisplay)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Defence)
+                @Html.DisplayFor(modelItem => item.Card.DefenseDisplay)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Level)
+                @Html.DisplayFor(modelItem => item.Card.LevelDisplay)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Race)
+                @Html.DisplayFor(modelItem => item.Card.Race)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Attribute)
+                @Html.DisplayFor(modelItem => item.Card.Attribute)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Archetype)
+                @Html.DisplayFor(modelItem => item.Card.Archetype)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Linkval)
+                @Html.DisplayFor(modelItem => item.Card.LinkvalDisplay)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.LinkMarkers)
+                @Html.DisplayFor(modelItem => item.Card.LinkMarkers)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                <a asp-action="DecreaseCardCount" asp-route-Id="@item.Card.Id" asp-route-source="index">-</a>
+                @Html.DisplayFor(modelItem => item.Count)
+                <a asp-action="IncreaseCardCount" asp-route-Id="@item.Card.Id" asp-route-source="index">+</a>
+            </td>
+            <td>
+                <a asp-action="Delete" asp-route-id="@item.Card.Id">Remove</a>
             </td>
         </tr>
 }

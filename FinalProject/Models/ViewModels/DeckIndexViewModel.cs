@@ -9,5 +9,7 @@ namespace FinalProject.Models.ViewModels
     {
         public List<Deck> Decks { get; set; }
         public List<InventoryCardMapping> CardMappings { get; set; }
+
+        public byte[] DefaultImageBytes { get; set; }
     }
 }

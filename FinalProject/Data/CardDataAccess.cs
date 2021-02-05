@@ -115,7 +115,23 @@ namespace FinalProject.Data
         public async Task<InventoryCardMapping> GetSpecificCardMappingForUserAsync(int userInventoryId, int cardId)
         {
             var mapping =  _context.InventoryCardMappings.FirstOrDefault(x => x.UserInventoryId == userInventoryId && x.CardId == cardId);
+            mapping.Card = await GetCardAsync(mapping.CardId);
             return mapping;
+
+        }
+        public async Task<bool> RemoveCardMappingForUser(int userInventoryId, int cardId)
+        {
+            var mapping = _context.InventoryCardMappings.FirstOrDefault(x => x.UserInventoryId == userInventoryId && x.CardId == cardId);
+            if (mapping != null)
+            {
+                _context.InventoryCardMappings.Remove(mapping);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            else
+            {
+                return false;
+            }
 
         }
     }

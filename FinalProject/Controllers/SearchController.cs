@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using FinalProject.Data;
 using FinalProject.Data.Interfaces;
 using FinalProject.Models;
 using FinalProject.Models.ViewModels;
@@ -63,7 +64,17 @@ namespace FinalProject.Controllers
             {
                 model.Name = Name;
                 model.Result = await _YGOProDeckAccess.GetCardByNameAsync(Name);
-
+                var card = await _DataAccess.CardDataAccess.GetCardByNameAsync(Name);
+                if(card != null)
+                {
+                    model.Result = card;
+                    var listings = await _DataAccess.TradeDataAccess.GetTradeListingsByCard(card.Id);
+                    if(listings != null)
+                    {
+                        var filteredListings = listings.Where(x => TradeDataAccess.IsStateDeletable(x.TradeState)).ToList();
+                        model.Listings = filteredListings;
+                    }
+                }
             }
             else
             {

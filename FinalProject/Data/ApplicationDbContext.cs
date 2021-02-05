@@ -17,7 +17,9 @@ namespace FinalProject.Data
         public DbSet<DeckCardMapping> DeckCardMappings { get; set; }
         public DbSet<UserInventory> UserInventories { get; set; }
         public DbSet<InventoryCardMapping> InventoryCardMappings { get; set; }
-
+        public DbSet<DefaultImage> DefaultImages { get; set; }
+        public DbSet<TradeListing> TradeListings { get; set; }
+        public DbSet<TradeOffer> TradeOffers { get; set; }
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {

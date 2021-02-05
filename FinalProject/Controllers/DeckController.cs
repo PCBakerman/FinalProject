@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -22,6 +23,7 @@ namespace FinalProject.Controllers
         // GET: DeckController
         public async Task<ActionResult> Index()
         {
+            var defaultImage = await _DataAccess.DefaultImageDataAccess.GetDefaultImageByIdBytesAync(1);
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // will give the user's userId
             if (string.IsNullOrWhiteSpace(userId))
             {
@@ -34,6 +36,7 @@ namespace FinalProject.Controllers
                 var cards = await _DataAccess.CardDataAccess.GetCardMappingsForUserAsync(userInventory.Id);
                 var model = new DeckIndexViewModel();
                 model.Decks = decks;
+                model.DefaultImageBytes = defaultImage;
                 model.CardMappings = cards;
                 return View(model);
             }
@@ -68,6 +71,7 @@ namespace FinalProject.Controllers
         // GET: DeckController/Details/5
         public async Task<IActionResult> Details(int id)
         {
+            var defaultImage = await _DataAccess.DefaultImageDataAccess.GetDefaultImageByIdBytesAync(1);
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // will give the user's userId
             if (string.IsNullOrWhiteSpace(userId))
             {
@@ -76,6 +80,7 @@ namespace FinalProject.Controllers
             else
             {
                 var model = new DeckDetailsViewModel();
+                model.DefaultImageBytes = defaultImage;
                 model.Deck = await _DataAccess.DeckDataAccess.GetDeckAsync(id);
                 if (model.Deck == null)
                 {
@@ -167,6 +172,47 @@ namespace FinalProject.Controllers
                 return View();
             }
         }
+        // POST: DeckController/Edit
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateImage(IFormCollection collection)
+        {
+            try
+            {
+                var file = collection.Files.FirstOrDefault();
+                if(file != null)
+                {
+                    var stringdeckId = collection["Deck.Id"];
+                    if (!string.IsNullOrEmpty(stringdeckId))
+                    {
+                        int deckId;
+                        if(int.TryParse(stringdeckId, out deckId))
+                        {
+                            using (var ms = new MemoryStream())
+                            {
+                                file.CopyTo(ms);
+                                var fileBytes = ms.ToArray();
+                                var deck = await _DataAccess.DeckDataAccess.GetDeckAsync(deckId);
+                                if(deck != null)
+                                {
+                                    deck.ImageBytes = fileBytes;
+                                    await _DataAccess.DeckDataAccess.Upsert(deck);
+                                }
+
+                            }
+                        }
+                    }
+                    
+                }
+                var model = new DeckDetailsViewModel();
+                model.DeckId = collection["Deck.Id"];
+                return RedirectToAction("Edit", model);
+            }
+            catch
+            {
+                return View();
+            }
+        }
         [HttpPost]
         public async Task<IActionResult> AddCard(DeckDetailsViewModel model)
         {
@@ -241,27 +287,18 @@ namespace FinalProject.Controllers
             return RedirectToAction("Edit", model);
         }
 
-
-        // GET: DeckController/Delete/5
-        public ActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            return View();
-        }
-
-
-        // POST: DeckController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
+            var result = await _DataAccess.DeckDataAccess.DeleteDeckAsync(id);
+            if (result)
             {
-                return RedirectToAction(nameof(Index));
+                // delete was successful
             }
-            catch
+            else
             {
-                return View();
+                // delete didn't work
             }
+            return RedirectToAction("Index");
         }
     }
 }

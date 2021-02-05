@@ -1,0 +1,37 @@
+﻿@model FinalProject.Models.ViewModels.CreateTradeListingViewModel
+@{
+    ViewData["Title"] = "Edit Listing";
+}
+
+
+<h4>Edit Listing</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="@Model.TradeListing.Id" />
+            <div class="form-group">
+                <input asp-for="@Model.Source" type="hidden" value="@Model.Source" />
+
+                <label class="control-label">Card</label>
+                <select asp-for="@Model.TradeListing.CardId" asp-items="Model.CardOptions"></select>
+
+                <label class="control-label">Trade Description</label>
+                <input asp-for="@Model.TradeListing.Description" type="text" value="@Model.TradeListing.Description" />
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Save Changes" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="EditCancel" asp-route-source="@Model.Source">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

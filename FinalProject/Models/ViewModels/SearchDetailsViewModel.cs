@@ -14,6 +14,7 @@ namespace FinalProject.Models.ViewModels
         public List<Deck> Decks { get; set; }
         public string DeckId { get; set; }
         public string CardId { get; set; }
+        public List<TradeListing> Listings { get; set; }
         public List<SelectListItem> DeckSelector
         {
             get

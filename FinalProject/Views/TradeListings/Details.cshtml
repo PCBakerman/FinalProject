@@ -1,0 +1,51 @@
+﻿@model FinalProject.Models.ViewModels.TradeListingsDetailViewModel
+
+@{
+    ViewData["Title"] = "Trade Detail";
+}
+
+<div class="row">
+    <div class="col">
+        <h4>Listing</h4>
+        <hr />
+        <dl class="row">
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Listing.Description)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Listing.Description)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Listing.Card.Name)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Listing.Card.Name)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Listing.CashOffer)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Listing.CashOffer)
+            </dd>
+            <dt class="col-sm-2">
+                Status
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Listing.TradeState)
+            </dd>
+        </dl>
+    </div>
+    <div class="col">
+        <h4>Offer</h4>
+        <hr />
+    </div>
+    
+</div>
+<div>
+    @if (Model.IsUsers)
+    {
+        <a asp-action="Edit" asp-route-id="@Model.Listing.Id" asp-route-source="Details">Edit Listing</a> 
+
+    }
+    <a asp-action="DetailsCancel" asp-route-source="Details">Back to List</a>
+</div>

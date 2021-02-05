@@ -15,5 +15,6 @@ namespace FinalProject.Data.Interfaces
         public Task<List<InventoryCardMapping>> GetCardMappingsForUserAsync(int userInventoryId);
         public Task<InventoryCardMapping> UpsertCardMappingAsync(InventoryCardMapping inventoryCardMapping);
         public Task<InventoryCardMapping> GetSpecificCardMappingForUserAsync(int userInventoryId, int cardId);
+        public Task<bool> RemoveCardMappingForUser(int userInventoryId, int cardId);
     }
 }

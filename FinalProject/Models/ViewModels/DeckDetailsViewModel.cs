@@ -20,5 +20,8 @@ namespace FinalProject.Models.ViewModels
                 }).ToList() ?? new List<SelectListItem>();
             } }
         public string DeckId { get; set; }
+
+        public byte[] DefaultImageBytes { get; set; }
+        
     }
 }

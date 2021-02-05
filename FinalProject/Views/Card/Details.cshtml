@@ -1,84 +1,108 @@
-﻿@model FinalProject.Models.Card
+﻿@model FinalProject.Models.InventoryCardMapping
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Card Details";
 }
-
-<h1>Details</h1>
-
-<div>
-    <h4>Card</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Type)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Type)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Attack)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Attack)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Defence)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Defence)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Level)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Level)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Race)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Race)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Attribute)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Attribute)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Archetype)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Archetype)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Linkval)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Linkval)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.LinkMarkers)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.LinkMarkers)
-        </dd>
-    </dl>
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <dl class="row">
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.Card.Name)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.Card.Name)
+                </dd>
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.Card.Type)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.Card.Type)
+                </dd>
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.Card.Description)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.Card.Description)
+                </dd>
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.Card.Attack)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.Card.Attack)
+                </dd>
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.Card.Defence)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.Card.Defence)
+                </dd>
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.Card.Level)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.Card.Level)
+                </dd>
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.Card.Race)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.Card.Race)
+                </dd>
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.Card.Attribute)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.Card.Attribute)
+                </dd>
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.Card.Archetype)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.Card.Archetype)
+                </dd>
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.Card.Linkval)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.Card.Linkval)
+                </dd>
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.Card.LinkMarkers)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.Card.LinkMarkers)
+                </dd>
+                <dt class="col-sm-2" style=" padding-right: 10px;">
+                    # of Cards
+                </dt>
+                <dd class="col-sm-10" style="padding-top: 10px;">
+                    <a asp-action="DecreaseCardCount" asp-route-Id="@Model.Card.Id">-</a>
+                    @Html.DisplayFor(modelItem => Model.Count)
+                    <a asp-action="IncreaseCardCount" asp-route-Id="@Model.Card.Id">+</a>
+                </dd>
+            </dl>
+            <a style=" padding-right: 10px;" asp-action="Delete" asp-route-id="@Model.Card.Id">Remove</a>
+            
+            <a asp-action="Index">Back to List</a>
+        </div>
+        <div class="col">
+            @{
+                string imgSrc;
+                if (Model.Card.ImageBytes != null)
+                {
+                    var base64 = Convert.ToBase64String(Model.Card.ImageBytes);
+                    imgSrc = String.Format("data:image/gif;base64,{0}", base64);
+                }
+                else
+                {
+                    imgSrc = "https://static.giantbomb.com/uploads/original/9/95666/1878961-pik.gif";
+                }
+            }
+            <img style="height: 578px; width: 400px;" src="@imgSrc" />
+        </div>
+    </div>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    
 </div>

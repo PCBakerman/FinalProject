@@ -23,6 +23,34 @@
             </div>
         </form>
     </div>
+    <div class="col-md-4">
+        @{ 
+
+            string imgSrc;
+            if (Model.Deck.ImageBytes != null)
+            {
+                var base64 = Convert.ToBase64String(Model.Deck.ImageBytes);
+                imgSrc = String.Format("data:image/gif;base64,{0}", base64);
+            }
+            else
+            {
+                if (Model.DefaultImageBytes != null)
+                {
+                    var base64 = Convert.ToBase64String(Model.DefaultImageBytes);
+                    imgSrc = String.Format("data:image/gif;base64,{0}", base64);
+                }
+                imgSrc = "";
+            }
+        }
+        @using (Html.BeginForm("UpdateImage", "Deck", FormMethod.Post,
+                          new { enctype = "multipart/form-data" }))
+        {
+            <label for="file">Upload Image:</label>
+            <input type="file" name="file" id="file" style="width: 100%;" />
+            <input asp-for="Deck.Id" type="hidden" value="@Model.Deck.Id" />
+            <input type="submit" value="Upload" class="submit" />
+        }
+    </div>
 </div>
 <h4>Deck Cards</h4>
 <hr />

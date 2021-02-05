@@ -10,5 +10,8 @@ namespace FinalProject.Data.Interfaces
         public ICardDataAccess CardDataAccess { get; set; }
         public IDeckDataAccess DeckDataAccess { get; set; }
         public IUserInventoryDataAccess UserInventoryDataAccess { get; set; }
+        public IDefaultImageDataAccess DefaultImageDataAccess { get; set; }
+        public ITradeDataAccess TradeDataAccess { get; set; }
+
     }
 }

@@ -11,6 +11,10 @@ namespace FinalProject.Models.ViewModels
         public UserInventory UserInventory { get; set; }
         public List<InventoryCardMapping> CardMappings { get; set; }
         public List<Deck> Decks { get; set; }
+        public List<TradeListing> TradeListings { get; set; }
+        public List<TradeOffer> TradeOffers { get; set; }
+        public int Rating { get; set; }
+        public byte[] DefaultImageBytes { get; set; }
 
     }
 }

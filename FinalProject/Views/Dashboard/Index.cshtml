@@ -8,12 +8,19 @@
 </div>
 <div>
     <h4>Decks</h4>
-    <a asp-action="Index" asp-route-controller="Deck">View All</a>
     <div style="display:flex; flex-wrap: wrap;">
         @{
+            var count = 0;
             foreach (var item in Model.Decks)
             {
-
+                if (count > 6)
+                {
+                    break;
+                }
+                else
+                {
+                    count++;
+                }
                 string imgSrc;
                 if (item.ImageBytes != null)
                 {
@@ -22,17 +29,29 @@
                 }
                 else
                 {
-                    //TODO replace imgSrc with default or not found placeholder
-                    imgSrc = "";
+                    if (Model.DefaultImageBytes != null)
+                    {
+                        var base64 = Convert.ToBase64String(Model.DefaultImageBytes);
+                        imgSrc = String.Format("data:image/gif;base64,{0}", base64);
+                    }
+                    else
+                    {
+                        imgSrc = "https://static.giantbomb.com/uploads/original/9/95666/1878961-pik.gif";
+                    }
+
                 }
-                <div style="padding-left: 15px; padding-bottom: 15px">
-                    <img style="height: 350px" src="@imgSrc" />
-
-                    <a asp-action="Details" asp-route-controller="Deck" asp-route-id="@item.Id">@Html.DisplayFor(modelItem => item.DeckName)</a>
-
-                    @*need details page and way to adjust count*@
+                <div class="col-md-3">
+                    <div class="row">
+                        <img style="height: 325px; width: 225px;" src="@imgSrc" />
+                    </div>
+                    <div class="row">
+                        <a asp-action="Details" asp-route-controller="Deck" asp-route-id="@item.Id">@Html.DisplayFor(modelItem => item.DeckName)</a>
+                    </div>
                 </div>
             }
+            <div style="padding: 50px;">
+                <a asp-action="Index" asp-route-controller="Deck">View All</a>
+            </div>
         }
     </div>
 </div>
@@ -40,32 +59,115 @@
 <div>
     <h4>Cards</h4>
 
-        <div style="display:flex; flex-wrap: wrap;">
-            @{
-                foreach (var item in Model.CardMappings)
+    <div style="display:flex; flex-wrap: wrap;">
+        @{
+            var cardCount = 0;
+            foreach (var item in Model.CardMappings)
+            {
+                if (cardCount > 10)
                 {
+                    break;
+                }
+                else
+                {
+                    cardCount++;
+                }
 
-                    string imgSrc;
-                    if (item.Card?.ImageBytes != null)
+                string imgSrc;
+                if (item.Card?.ImageBytes != null)
+                {
+                    var base64 = Convert.ToBase64String(item.Card.ImageBytes);
+                    imgSrc = String.Format("data:image/gif;base64,{0}", base64);
+                }
+                else
+                {
+                    if (Model.DefaultImageBytes != null)
                     {
-                        var base64 = Convert.ToBase64String(item.Card.ImageBytes);
+                        var base64 = Convert.ToBase64String(Model.DefaultImageBytes);
                         imgSrc = String.Format("data:image/gif;base64,{0}", base64);
                     }
                     else
                     {
-                        //TODO replace imgSrc with default or not found placeholder
-                        imgSrc = "";
+                        imgSrc = "https://static.giantbomb.com/uploads/original/9/95666/1878961-pik.gif";
                     }
-                    <div style="padding-left: 15px; padding-bottom: 15px">
-                        <img style="height: 350px" src="@imgSrc" />
-                        <p>@Html.DisplayFor(modelItem => item.Card.Name)</p>
+
+                }
+
+                <div class="col-md-3">
+                    <div class="row">
+                        <img style="height: 325px; width: 225px;" src="@imgSrc" />
+                    </div>
+                    <div class="row">
+                        <a asp-route-controller="Card" asp-action="Details" asp-route-id="@item.Card.Id">@Html.DisplayFor(modelItem => item.Card.Name)</a>
                         <p>
                             Cards In Collection: @Html.DisplayFor(modelItem => item.Count)
                         </p>
-                        @*need details page and way to adjust count*@
                     </div>
+                </div>
                 }
-            }
+          }
         </div>
+    <div>
+        <div style="padding: 50px;">
+            <a asp-action="Index" asp-route-controller="Card">View All</a>
+        </div>
+    </div>
+    </div>
+
+<div>
+    <h4>Trades</h4>
+    <h2>
+        My Trade Listings
+    </h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    Description
+                </th>
+                <th>
+                    Card
+                </th>
+                <th>
+                    Cash
+                </th>
+                <th>
+                    Status
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.TradeListings)
+            {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Card.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CashOffer)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TradeState)
+                </td>
+                <td>
+                    <a asp-action="Details" asp-route-controller="TradeListings" asp-route-id="@item.Id" asp-route-source="Dashboard">Details</a>
+                    <a asp-action="Delete" asp-route-controller="TradeListings" asp-route-id="@item.Id" asp-route-source="Dashboard">Delete</a>
+                </td>
+            </tr>
+            }
+        </tbody>
+    </table>
+    <p>
+        <a asp-action="Create" asp-route-controller="TradeListings" asp-route-source="Dashboard">Create Listing</a>
+        |
+        <a asp-action="Index" asp-route-controller="TradeListings">View All Listings</a>
+    </p>
+    <h2>
+        My Current Offers
+    </h2>
+
 </div>
-<div></div>

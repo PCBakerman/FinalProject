@@ -112,6 +112,48 @@
         </div>
     </div>
 </div>
+@if (Model.Listings != null && Model.Listings.Count > 0)
+{
+    <h5>Current Listings For this Card</h5>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    Description
+                </th>
+                <th>
+                    User
+                </th>
+                <th>
+                    User Rating
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Listings)
+            {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Email)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UserRating)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">View Listing</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Make Offer</a>
+                </td>
+            </tr>
+            }
+        </tbody>
+    </table>
+
+}
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js">
 
 </script>

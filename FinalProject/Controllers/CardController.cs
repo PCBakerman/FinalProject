@@ -7,22 +7,32 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using FinalProject.Data;
 using FinalProject.Models;
+using FinalProject.Data.Interfaces;
+using System.Security.Claims;
 
 namespace FinalProject.Controllers
 {
     public class CardController : Controller
     {
-        private readonly ApplicationDbContext _context;
-
-        public CardController(ApplicationDbContext context)
+        private IDataAccess _DataAccess;
+        public CardController(IDataAccess dataAccess)
         {
-            _context = context;
+            _DataAccess = dataAccess;
         }
 
         // GET: Card
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Cards.ToListAsync());
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userInventory = await _DataAccess.UserInventoryDataAccess.GetUserInventoryByUserAsync(userId);
+            if (userInventory == null)
+            {
+                userInventory = new UserInventory();
+                userInventory.ApplicationUserId = userId;
+                userInventory = await _DataAccess.UserInventoryDataAccess.Upsert(userInventory);
+            }
+            var CardMappings = await _DataAccess.CardDataAccess.GetCardMappingsForUserAsync(userInventory.Id);
+            return View(CardMappings);
         }
 
         // GET: Card/Details/5
@@ -32,122 +42,105 @@ namespace FinalProject.Controllers
             {
                 return NotFound();
             }
-
-            var card = await _context.Cards
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (card == null)
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userInventory = await _DataAccess.UserInventoryDataAccess.GetUserInventoryByUserAsync(userId);
+            if (userInventory == null)
             {
-                return NotFound();
+                userInventory = new UserInventory();
+                userInventory.ApplicationUserId = userId;
+                userInventory = await _DataAccess.UserInventoryDataAccess.Upsert(userInventory);
             }
-
-            return View(card);
+            var CardMapping = await _DataAccess.CardDataAccess.GetSpecificCardMappingForUserAsync(userInventory.Id, id ?? 0);
+            return View(CardMapping);
         }
-
-        // GET: Card/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Card/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Type,Description,Attack,Defense,Level,Race,Attribute,Archetype,Linkval,LinkMarkers")] Card card)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(card);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(card);
-        }
-
-        // GET: Card/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var card = await _context.Cards.FindAsync(id);
-            if (card == null)
-            {
-                return NotFound();
-            }
-            return View(card);
-        }
-
-        // POST: Card/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Type,Description,Attack,Defense,Level,Race,Attribute,Archetype,Linkval,LinkMarkers")] Card card)
-        {
-            if (id != card.Id)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(card);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!CardExists(card.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(card);
-        }
-
-        // GET: Card/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
-
-            var card = await _context.Cards
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (card == null)
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userInventory = await _DataAccess.UserInventoryDataAccess.GetUserInventoryByUserAsync(userId);
+            if (userInventory == null)
+            {
+                userInventory = new UserInventory();
+                userInventory.ApplicationUserId = userId;
+                userInventory = await _DataAccess.UserInventoryDataAccess.Upsert(userInventory);
+            }
+            await _DataAccess.CardDataAccess.RemoveCardMappingForUser(userInventory.Id, id ?? 0);
+            return RedirectToAction("Index");
+        }
+        public async Task<IActionResult> DecreaseCardCount(int? id, string source)
+        {
+            if (id == null)
             {
                 return NotFound();
             }
-
-            return View(card);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userInventory = await _DataAccess.UserInventoryDataAccess.GetUserInventoryByUserAsync(userId);
+            if (userInventory == null)
+            {
+                userInventory = new UserInventory();
+                userInventory.ApplicationUserId = userId;
+                userInventory = await _DataAccess.UserInventoryDataAccess.Upsert(userInventory);
+            }
+            var CardMapping = await _DataAccess.CardDataAccess.GetSpecificCardMappingForUserAsync(userInventory.Id, id ?? 0);
+            if(CardMapping != null)
+            {
+                CardMapping.Count--;
+                if(CardMapping.Count < 0)
+                {
+                    await _DataAccess.CardDataAccess.RemoveCardMappingForUser(userInventory.Id, id ?? 0);
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    await _DataAccess.CardDataAccess.UpsertCardMappingAsync(CardMapping);
+                    if (source == "index")
+                        return RedirectToAction("Index");
+                    else
+                    {
+                        var obj = new
+                        {
+                            id = id
+                        };
+                        return RedirectToAction("Details", obj);
+                    }
+                }
+            }
+            return RedirectToAction("Index");
         }
-
-        // POST: Card/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> IncreaseCardCount(int? id, string source)
         {
-            var card = await _context.Cards.FindAsync(id);
-            _context.Cards.Remove(card);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool CardExists(int id)
-        {
-            return _context.Cards.Any(e => e.Id == id);
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userInventory = await _DataAccess.UserInventoryDataAccess.GetUserInventoryByUserAsync(userId);
+            if (userInventory == null)
+            {
+                userInventory = new UserInventory();
+                userInventory.ApplicationUserId = userId;
+                userInventory = await _DataAccess.UserInventoryDataAccess.Upsert(userInventory);
+            }
+            var CardMapping = await _DataAccess.CardDataAccess.GetSpecificCardMappingForUserAsync(userInventory.Id, id ?? 0);
+            if (CardMapping != null)
+            {
+                CardMapping.Count++;
+                await _DataAccess.CardDataAccess.UpsertCardMappingAsync(CardMapping);
+                if(source == "index")
+                    return RedirectToAction("Index");
+                else
+                {
+                    var obj = new
+                    {
+                        id = id
+                    };
+                    return RedirectToAction("Details", obj);
+                }
+            }
+            return RedirectToAction("Index");
         }
     }
 }

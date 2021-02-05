@@ -1,0 +1,54 @@
+﻿@model IEnumerable<FinalProject.Models.TradeListing>
+
+@{
+    ViewData["Title"] = "My Listings";
+}
+
+<h1>My Trade Listings</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.ActionLink("Card", "Index", new { sortOrder = ViewBag.NameSortParm })
+            </th>
+            <th>
+                @Html.ActionLink("Type", "Index", new { sortOrder = ViewBag.TypeSortParm })
+            </th>
+            <th>
+                @Html.ActionLink("Cash Offer", "Index", new { sortOrder = ViewBag.OfferSortParam })
+            </th>
+            <th>
+                @Html.ActionLink("Status", "Index", new { sortOrder = ViewBag.StatusSortParm })
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Card.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Card.Type)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CashOfferDisplay)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TradeState)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id" asp-route-source="Index">Edit Listing</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">View Listing</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id" asp-route-source="Index">Remove Listing</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

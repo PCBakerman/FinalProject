@@ -4,14 +4,16 @@ using FinalProject.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace FinalProject.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210204195846_TradeOffersAndListings_DefaultImage")]
+    partial class TradeOffersAndListings_DefaultImage
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -235,68 +237,6 @@ namespace FinalProject.Data.Migrations
                     b.HasIndex("CardId");
 
                     b.ToTable("InventoryCardMappings");
-                });
-
-            modelBuilder.Entity("FinalProject.Models.TradeListing", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("ApplicationUserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("CardId")
-                        .HasColumnType("int");
-
-                    b.Property<double>("CashOffer")
-                        .HasColumnType("float");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("TradeState")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ApplicationUserId");
-
-                    b.HasIndex("CardId");
-
-                    b.ToTable("TradeListings");
-                });
-
-            modelBuilder.Entity("FinalProject.Models.TradeOffer", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("TradeListingOneId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TradeListingOneRating")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TradeListingTwoId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TradeListingTwoRating")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TradeState")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("TradeListingOneId");
-
-                    b.HasIndex("TradeListingTwoId");
-
-                    b.ToTable("TradeOffers");
                 });
 
             modelBuilder.Entity("FinalProject.Models.UserInventory", b =>
@@ -596,34 +536,6 @@ namespace FinalProject.Data.Migrations
                     b.HasOne("FinalProject.Models.UserInventory", "UserInventory")
                         .WithMany()
                         .HasForeignKey("UserInventoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("FinalProject.Models.TradeListing", b =>
-                {
-                    b.HasOne("FinalProject.Models.ApplicationUser", "ApplicationUser")
-                        .WithMany()
-                        .HasForeignKey("ApplicationUserId");
-
-                    b.HasOne("FinalProject.Models.Card", "Card")
-                        .WithMany()
-                        .HasForeignKey("CardId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("FinalProject.Models.TradeOffer", b =>
-                {
-                    b.HasOne("FinalProject.Models.TradeListing", "TradeListingOne")
-                        .WithMany()
-                        .HasForeignKey("TradeListingOneId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("FinalProject.Models.TradeListing", "TradeListingTwo")
-                        .WithMany()
-                        .HasForeignKey("TradeListingTwoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

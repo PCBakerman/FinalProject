@@ -25,15 +25,21 @@
                 }
                 else
                 {
-                    //TODO replace imgSrc with default or not found placeholder
-                    imgSrc = "";
+                    if (Model.DefaultImageBytes != null)
+                    {
+                        var base64 = Convert.ToBase64String(Model.DefaultImageBytes);
+                        imgSrc = String.Format("data:image/gif;base64,{0}", base64);
+                    }
+                    else
+                    {
+                        imgSrc = "";
+                    }
                 }
                 <div style="padding-left: 15px; padding-bottom: 15px">
-                    <img style="height: 350px" src="@imgSrc" />
+                            <img style="height: 325px; width: 225px;" src="@imgSrc" />
                     <a asp-action="Details" asp-route-controller="Deck" asp-route-id="@item.Id">@Html.DisplayFor(modelItem => item.DeckName)</a>
-                    
-
-                    @*need details page and way to adjust count*@
+                    <a asp-action="Edit" asp-route-deckid="@item.Id">Edit</a>
+                    <a asp-action="Delete" asp-route-controller="Deck" asp-route-id="@item.Id">Delete</a>
                 </div>
             }
         }

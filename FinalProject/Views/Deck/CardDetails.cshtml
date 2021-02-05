@@ -1,83 +1,100 @@
 ﻿@model FinalProject.Models.ViewModels.DeckCardDetailsViewModel
 
-    @{
-        ViewData["Title"] = "Card Details";
-    }
+@{
+    ViewData["Title"] = "Card Details";
+}
 
-    <h1>Card Details</h1>
+<h1>Card Details</h1>
 
-    <div>
-        <h4>Card</h4>
-        <hr />
-        <dl class="row">
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.Card.Name)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.Card.Name)
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.Card.Type)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.Card.Type)
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.Card.Description)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.Card.Description)
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.Card.Attack)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.Card.Attack)
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.Card.Defence)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.Card.Defence)
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.Card.Level)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.Card.Level)
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.Card.Race)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.Card.Race)
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.Card.Attribute)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.Card.Attribute)
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.Card.Archetype)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.Card.Archetype)
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.Card.Linkval)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.Card.Linkval)
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.Card.LinkMarkers)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.Card.LinkMarkers)
-            </dd>
-        </dl>
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <dl class="row">
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.Card.Name)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.Card.Name)
+                </dd>
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.Card.Type)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.Card.Type)
+                </dd>
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.Card.Description)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.Card.Description)
+                </dd>
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.Card.Attack)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.Card.Attack)
+                </dd>
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.Card.Defence)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.Card.Defence)
+                </dd>
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.Card.Level)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.Card.Level)
+                </dd>
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.Card.Race)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.Card.Race)
+                </dd>
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.Card.Attribute)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.Card.Attribute)
+                </dd>
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.Card.Archetype)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.Card.Archetype)
+                </dd>
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.Card.Linkval)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.Card.Linkval)
+                </dd>
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.Card.LinkMarkers)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.Card.LinkMarkers)
+                </dd>
+            </dl>
+        </div>
+        <div class="col">
+            @{
+                string imgSrc;
+                if (Model.Card.ImageBytes != null)
+                {
+                    var base64 = Convert.ToBase64String(Model.Card.ImageBytes);
+                    imgSrc = String.Format("data:image/gif;base64,{0}", base64);
+                }
+                else
+                {
+                    imgSrc = "https://static.giantbomb.com/uploads/original/9/95666/1878961-pik.gif";
+                }
+            }
+            <img style="height: 578px; width: 400px;" src="@imgSrc" />
+        </div>
     </div>
-    <div>
-        <a asp-action="RedirectToDeck" asp-route-deckid="@Model.DeckId">Back to Deck</a>
-    </div>
+</div>
+<div>
+    <a asp-action="RedirectToDeck" asp-route-deckid="@Model.DeckId">Back to Deck</a>
+</div>
