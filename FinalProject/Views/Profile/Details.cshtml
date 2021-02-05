@@ -1,0 +1,97 @@
+﻿@model FinalProject.Models.ViewModels.ProfileDetailsViewModel
+
+@{
+    ViewData["Title"] = "Profile View";
+}
+
+<h1>Profile</h1>
+
+<div>
+    <h4>@Model.UserName</h4>
+    <hr />
+    <h5> Life Points: @Model.LifePoints / 8000</h5>
+    <dl class="row">
+        @if (Model.UserInventory.IsAddressPublic)
+        {
+            <dt class="col-sm-2">
+                Address
+            </dt>
+            <dd class="col-sm-10">
+                @Model.UserInventory.AddressLine
+            </dd>
+            <dt class="col-sm-2">
+                City
+            </dt>
+            <dd class="col-sm-10">
+                @Model.UserInventory.City
+            </dd>
+            <dt class="col-sm-2">
+                State
+            </dt>
+            <dd class="col-sm-10">
+                @Model.UserInventory.State
+            </dd>
+            <dt class="col-sm-2">
+                Zip
+            </dt>
+            <dd class="col-sm-10">
+                @Model.UserInventory.Zip
+            </dd>
+            <div id="map_populate" style="width:100%; height:500px; border: 1px solid #5E5454;">
+            </div>
+        }
+        else
+        {
+            <dt class="col-sm-2">
+                Address
+            </dt>
+            <dd class="col-sm-10">
+                Address Is Private
+            </dd>
+        }
+    </dl>
+</div>
+<div>
+    @if (Model.IsOwn)
+    {
+        <a asp-action="Edit" asp-route-id="@Model.UserInventory.ApplicationUserId">Edit</a>
+    }
+    else
+    {
+        <a asp-action="AddFriend" asp-route-id="@Model.UserInventory.Id">Add Friend</a>
+        <a asp-action="BlockUser" asp-route-id="@Model.UserInventory.Id">Block User</a>
+    }
+</div>
+@if (Model.UserInventory.IsAddressPublic)
+{
+    var address = $"{Model.UserInventory.AddressLine} {Model.UserInventory.City} {Model.UserInventory.State}, {Model.UserInventory.Zip}";
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDc4chJZeRBQCPRRrRiUmmMZpEAb7CVCYI&v=3.exp&sensor=false" type="text/javascript"></script>
+    <script>
+        var mapcode;
+        function initialize() {
+            mapcode = new google.maps.Geocoder();
+            var lnt = new google.maps.LatLng(26.45, 82.85);
+            var mapOptions = {
+                zoom: 9,
+                center: lnt,
+                diagId: google.maps.MapTypeId.ROADMAP
+            };
+
+            const map = new google.maps.Map(document.getElementById('map_populate'), mapOptions);
+            mapcode.geocode({ 'address': '@address' }, function (results, status) {
+                 if (status == google.maps.GeocoderStatus.OK) {
+                     console.log(results);
+                     map.setCenter(results[0].geometry.location);
+                    var marker = new google.maps.Marker({
+                        position: results[0].geometry.location,
+                        title: "User Location",
+                    });
+                     marker.setMap(map);
+                } else {
+                    // something went wrong
+                }
+            });
+        }
+        google.maps.event.addDomListener(window, 'load', initialize);
+    </script>
+}

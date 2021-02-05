@@ -13,6 +13,8 @@ namespace FinalProject.Models.ViewModels
         public List<Deck> Decks { get; set; }
         public List<TradeListing> TradeListings { get; set; }
         public List<TradeOffer> TradeOffers { get; set; }
+        public List<FriendBlockItem> Friends { get; set; }
+        public List<FriendBlockItem> BlockList { get; set; }
         public int Rating { get; set; }
         public byte[] DefaultImageBytes { get; set; }
 

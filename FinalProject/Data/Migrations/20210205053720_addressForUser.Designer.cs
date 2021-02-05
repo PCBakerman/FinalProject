@@ -4,14 +4,16 @@ using FinalProject.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace FinalProject.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210205053720_addressForUser")]
+    partial class addressForUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -217,27 +219,6 @@ namespace FinalProject.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("DefaultImages");
-                });
-
-            modelBuilder.Entity("FinalProject.Models.FriendBlockItem", b =>
-                {
-                    b.Property<int>("UserInventoryOneId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UserInventorTwoId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("UserInventoryTwoId")
-                        .HasColumnType("int");
-
-                    b.HasKey("UserInventoryOneId", "UserInventorTwoId");
-
-                    b.HasIndex("UserInventoryTwoId");
-
-                    b.ToTable("FriendBlockItems");
                 });
 
             modelBuilder.Entity("FinalProject.Models.InventoryCardMapping", b =>
@@ -619,19 +600,6 @@ namespace FinalProject.Data.Migrations
                         .HasForeignKey("DeckId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("FinalProject.Models.FriendBlockItem", b =>
-                {
-                    b.HasOne("FinalProject.Models.UserInventory", "UserInventoryOne")
-                        .WithMany()
-                        .HasForeignKey("UserInventoryOneId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("FinalProject.Models.UserInventory", "UserInventoryTwo")
-                        .WithMany()
-                        .HasForeignKey("UserInventoryTwoId");
                 });
 
             modelBuilder.Entity("FinalProject.Models.InventoryCardMapping", b =>

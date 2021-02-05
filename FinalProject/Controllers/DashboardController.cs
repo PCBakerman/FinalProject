@@ -39,6 +39,9 @@ namespace FinalProject.Controllers
             model.DefaultImageBytes = defaultImage;
             model.TradeListings = tradeListings;
             model.Rating = rating;
+            model.TradeOffers = await _DataAccess.TradeDataAccess.GetTradeOffersByUserAync(userId);
+            model.Friends = await _DataAccess.UserInventoryDataAccess.GetFriends(userInventory.Id);
+            model.BlockList = await _DataAccess.UserInventoryDataAccess.GetBlocks(userInventory.Id);
             return View(model);
         }
     }

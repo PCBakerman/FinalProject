@@ -70,6 +70,7 @@ namespace FinalProject.Controllers
         // GET: TradeListings
         public async Task<IActionResult> Browse(string sortOrder)
         {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             ViewBag.NameSortParam = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
             ViewBag.StatusSortParam = sortOrder == "status" ? "status_desc" : "status";
             ViewBag.OfferSortParam = sortOrder == "offer" ? "offer_desc" : "offer";
@@ -84,7 +85,13 @@ namespace FinalProject.Controllers
             ViewBag.UserSortParam = sortOrder == "user" ? "user_desc" : "user";
             ViewBag.RatingSortParam = sortOrder == "rating" ? "rating_desc" : "rating";
             var listings = await _DataAccess.TradeDataAccess.GetTradeListings();
-            listings = listings.Where(x => TradeDataAccess.IsStateDeletable(x.TradeState)).ToList();
+            var inventory = await _DataAccess.UserInventoryDataAccess.GetUserInventoryByUserAsync(userId);
+            listings = listings.Where(x => TradeDataAccess.IsStateDeletable(x.TradeState) && x.ApplicationUserId != userId).ToList();
+            if (inventory != null)
+            {
+                var blockList = await _DataAccess.UserInventoryDataAccess.GetBlocks(inventory.Id);
+                listings = listings.Where(x => !blockList.Any(y => y.UserInventoryOne.ApplicationUserId == x.ApplicationUserId || y.UserInventoryTwo.ApplicationUserId == x.ApplicationUserId)).ToList();
+            }
             switch (sortOrder)
             {
                 case "desc":

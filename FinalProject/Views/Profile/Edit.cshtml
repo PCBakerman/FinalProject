@@ -1,0 +1,49 @@
+﻿@model FinalProject.Models.ViewModels.ProfileDetailsViewModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>UserInventory</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="@Model.UserInventory.Id" />
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="@Model.UserInventory.IsAddressPublic" /> Is Public
+                </label>
+            </div>
+            <div class="form-group">
+                <label asp-for="@Model.UserInventory.AddressLine" class="control-label"></label>
+                <input asp-for="@Model.UserInventory.AddressLine" class="form-control" />
+                <span asp-validation-for="@Model.UserInventory.AddressLine" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="@Model.UserInventory.City" class="control-label"></label>
+                <input asp-for="@Model.UserInventory.City" class="form-control" />
+                <span asp-validation-for="@Model.UserInventory.City" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="@Model.UserInventory.State" class="control-label"></label>
+                <input asp-for="@Model.UserInventory.State" class="form-control" />
+                <span asp-validation-for="@Model.UserInventory.State" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="@Model.UserInventory.Zip" class="control-label"></label>
+                <input asp-for="@Model.UserInventory.Zip" type="number" class="form-control" />
+                <span asp-validation-for="@Model.UserInventory.Zip" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

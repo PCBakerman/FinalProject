@@ -1,12 +1,52 @@
 ﻿@model FinalProject.Models.ViewModels.DashboardIndexViewModel
 @{
     ViewData["Title"] = "Dashboard";
+    var isPublicDisplay = Model.UserInventory?.IsAddressPublic == true ? "yes" : "no";
 }
 
 <div class="text-center">
     <h3>Welcome @Model.Name</h3>
+    <h5> Life Points: @Model.Rating / 8000</h5>
 </div>
-<div>
+<div class="row">
+    <h4>
+        Address Info
+    </h4>
+    <dl>
+        <dt class="col-sm-2">
+            Address Line
+        </dt>
+        <dd class="col-sm-10">
+            @Model.UserInventory.AddressLine
+        </dd>
+        <dt class="col-sm-2">
+            City
+        </dt>
+        <dd class="col-sm-10">
+            @Model.UserInventory.City
+        </dd>
+        <dt class="col-sm-2">
+            State
+        </dt>
+        <dd class="col-sm-10">
+            @Model.UserInventory.State
+        </dd>
+        <dt class="col-sm-2">
+            Zip
+        </dt>
+        <dd class="col-sm-10">
+            @Model.UserInventory.Zip
+        </dd>
+        <dt class="col-sm-2">
+            Public?
+        </dt>
+        <dd class="col-sm-10">
+            @isPublicDisplay
+        </dd>
+    </dl>
+    <a asp-action="Edit" asp-route-controller="Profile">Edit</a>
+</div>
+<div class="row">
     <h4>Decks</h4>
     <div style="display:flex; flex-wrap: wrap;">
         @{
@@ -49,10 +89,10 @@
                     </div>
                 </div>
             }
-            <div style="padding: 50px;">
-                <a asp-action="Index" asp-route-controller="Deck">View All</a>
-            </div>
         }
+    </div>
+    <div style="padding: 50px;">
+        <a asp-action="Index" asp-route-controller="Deck">View All</a>
     </div>
 </div>
 
@@ -140,24 +180,24 @@
         <tbody>
             @foreach (var item in Model.TradeListings)
             {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Description)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Card.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.CashOffer)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.TradeState)
-                </td>
-                <td>
-                    <a asp-action="Details" asp-route-controller="TradeListings" asp-route-id="@item.Id" asp-route-source="Dashboard">Details</a>
-                    <a asp-action="Delete" asp-route-controller="TradeListings" asp-route-id="@item.Id" asp-route-source="Dashboard">Delete</a>
-                </td>
-            </tr>
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Description)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Card.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CashOffer)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.TradeState)
+                    </td>
+                    <td>
+                        <a asp-action="Details" asp-route-controller="TradeListings" asp-route-id="@item.Id" asp-route-source="Dashboard">Details</a>
+                        <a asp-action="Delete" asp-route-controller="TradeListings" asp-route-id="@item.Id" asp-route-source="Dashboard">Delete</a>
+                    </td>
+                </tr>
             }
         </tbody>
     </table>
@@ -169,5 +209,195 @@
     <h2>
         My Current Offers
     </h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    My Card Offer
+                </th>
+                <th>
+                    My Cash Offer
+                </th>
+                <th>
+                    My Description
+                </th>
+                <th>
+                    Their Card Offer
+                </th>
+                <th>
+                    Their Cash Offer
+                </th>
+                <th>
+                    Their Description
+                </th>
+                <th>
+                    Status
+                </th>
+                <th>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.TradeOffers)
+            {
+                string cardNameTheirs = "";
+                string cashOfferTheirs = "";
+                string cardNameMine = "";
+                string cashOfferMine = "";
+                string descMine = "";
+                string descTheirs = "";
+                if(Model.UserInventory.ApplicationUserId == item.TradeListingOne.ApplicationUserId)
+                {
+                    cardNameTheirs = item.TradeListingTwo.Card.Name;
+                    cashOfferTheirs = item.TradeListingTwo.CashOfferDisplay;
+                    cardNameMine = item.TradeListingOne.Card.Name;
+                    cashOfferMine = item.TradeListingOne.CashOfferDisplay;
+                    descMine = item.TradeListingOne.Description;
+                    descTheirs = item.TradeListingTwo.Description;
+                }
+                else
+                {
+                    cardNameMine = item.TradeListingTwo.Card.Name;
+                    cashOfferMine = item.TradeListingTwo.CashOfferDisplay;
+                    cardNameTheirs = item.TradeListingOne.Card.Name;
+                    cashOfferTheirs = item.TradeListingOne.CashOfferDisplay;
+                    descTheirs = item.TradeListingOne.Description;
+                    descMine = item.TradeListingTwo.Description;
+                }
+            <tr>
+                <td>
+                    @cardNameMine
+                </td>
+                <td>
+                    @cashOfferMine
+                </td>
+                <td>
+                    @descMine
+                </td>
+                <td>
+                    @cardNameTheirs
+                </td>
+                <td>
+                    @cashOfferTheirs
+                </td>
+                <td>
+                    @descTheirs
+                </td>
+                <td>
+                    <a asp-action="Details" asp-route-controller="TradeOffers" asp-route-id="@item.Id">View</a>
+                </td>
+            </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<div>
+    <h4>Friends</h4>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    User
+                </th>
+                <th>
+                    Status
+                </th>
+                <th>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Friends)
+            {
+                string isPending = "";
+                string nameDisplay = "";
+                if (item.Status ==FriendBlockStatus.Pending)
+                {
+                    isPending = "yes";
+                }
+                else
+                {
+                    isPending = "";
+                }
+                if (Model.UserInventory.Id == item.UserInventoryOneId)
+                {
+                    nameDisplay = item.UserInventoryTwo.Email;
+                }
+                else
+                {
+                    nameDisplay = item.UserInventoryOne.Email;
+                }
+                <tr>
+                    <td>
+                        @nameDisplay
+                    </td>
+                    <td>
+                        @isPending
+                    </td>
+                    <td>
+                        @if (Model.UserInventory.Id == item.UserInventoryOneId && item.Status == FriendBlockStatus.Pending)
+                        {
+                            <a asp-action="RemoveFriend" asp-route-controller="Profile" asp-route-id="@item.UserInventorTwoId">Remove</a>
+                            <a asp-action="AddFriend" asp-route-controller="Profile" asp-route-id="@item.UserInventorTwoId">Accept</a>
+                            <a asp-action="Details" asp-route-controller="Profile" asp-route-id="@item.UserInventorTwoId">View Profile</a>
+                        }
+                        else if (Model.UserInventory.Id == item.UserInventoryOneId)
+                        {
+                            <a asp-action="RemoveFriend" asp-route-controller="Profile" asp-route-id="@item.UserInventorTwoId">Remove</a>
+                            <a asp-action="RemoveFriend" asp-route-controller="Profile" asp-route-id="@item.UserInventorTwoId">View Profile</a>
+                        }
+                        else
+                        {
+                            <a asp-action="RemoveFriend" asp-route-controller="Profile" asp-route-id="@item.UserInventoryOneId">Remove</a>
+                            <a asp-action="RemoveFriend" asp-route-controller="Profile" asp-route-id="@item.UserInventoryOneId">View Profile</a>
+                        }
+
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<div>
+    <h4>Block List</h4>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    User
+                </th>
+                <th>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.BlockList)
+            {
+                string nameDisplay = "";
+                if (Model.UserInventory.Id == item.UserInventoryOneId)
+                {
+                    nameDisplay = item.UserInventoryTwo.Email;
+                }
+                else
+                {
+                    nameDisplay = item.UserInventoryOne.Email;
+                }
+                if (Model.UserInventory.Id == item.UserInventoryOneId)
+                {
+                    <tr>
+                        <td>
+                            @nameDisplay
+                        </td>
+                        <td>
+                            <a asp-action="RemoveFriend" asp-route-controller="Profile" asp-route-id="@item.UserInventorTwoId">Unblock</a>
+                            <a asp-action="RemoveFriend" asp-route-controller="Profile" asp-route-id="@item.UserInventorTwoId">View Profile</a>
+
+
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
 
 </div>

@@ -44,8 +44,13 @@
 <div>
     @if (Model.IsUsers)
     {
-        <a asp-action="Edit" asp-route-id="@Model.Listing.Id" asp-route-source="Details">Edit Listing</a> 
+        <a asp-action="Edit" asp-route-id="@Model.Listing.Id" asp-route-source="Details">Edit Listing</a>
 
+    }
+    else
+    { 
+        <a asp-action="DetailsUser" asp-route-controller="Profile" asp-route-id="@Model.Listing.ApplicationUserId">View User</a>
+        <a asp-action="Create" asp-route-controller="TradeOffers" asp-route-id="@Model.Listing.Id">Make Offer</a>
     }
     <a asp-action="DetailsCancel" asp-route-source="Details">Back to List</a>
 </div>

@@ -1,0 +1,260 @@
+﻿@model FinalProject.Models.ViewModels.TradeOfferDetailsViewModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h3>Offer</h3>
+<div class="col">
+    <h4>My Offer</h4>
+    <hr />
+    <div class="col">
+        @{
+            string imgSrcMine = "";
+            string cardNameMine = "";
+            string cardLabelMine = "";
+            string cashOfferLabelMine = "";
+            string cashOfferMine = "";
+        }
+        @if (Model.OwnsListingOne)
+        {
+            if (Model.Offer.TradeListingOne?.Card != null)
+            {
+                cardLabelMine = "Card:";
+                cardNameMine = Model.Offer.TradeListingOne.Card.Name;
+            }
+            if (Model.Offer.TradeListingOne?.CashOffer != null && Model.Offer.TradeListingOne.CashOffer > 0)
+            {
+                cashOfferLabelMine = "Cash Offer:";
+                cashOfferMine = Model.Offer.TradeListingOne.CashOfferDisplay;
+            }
+            if (Model.Offer.TradeListingOne?.Card?.ImageBytes != null)
+            {
+                var base64 = Convert.ToBase64String(Model.Offer.TradeListingOne.Card.ImageBytes);
+                imgSrcMine = String.Format("data:image/gif;base64,{0}", base64);
+            }
+            else if (Model.Offer.TradeListingOne?.Card == null)
+            {
+                imgSrcMine = "";
+            }
+            else
+            {
+                imgSrcMine = "https://static.giantbomb.com/uploads/original/9/95666/1878961-pik.gif";
+
+            }
+        }
+        else if (Model.OwnsListingTwo)
+        {
+            if (Model.Offer.TradeListingTwo?.Card != null)
+            {
+                cardLabelMine = "Card:";
+                cardNameMine = Model.Offer.TradeListingTwo.Card.Name;
+            }
+            if (Model.Offer.TradeListingTwo?.CashOffer != null && Model.Offer.TradeListingTwo.CashOffer > 0)
+            {
+                cashOfferLabelMine = "Cash Offer:";
+                cashOfferMine = Model.Offer.TradeListingTwo.CashOfferDisplay;
+            }
+            if (Model.Offer.TradeListingTwo?.Card?.ImageBytes != null)
+            {
+                var base64 = Convert.ToBase64String(Model.Offer.TradeListingTwo.Card.ImageBytes);
+                imgSrcMine = String.Format("data:image/gif;base64,{0}", base64);
+            }
+            else if (Model.Offer.TradeListingTwo?.Card == null)
+            {
+                imgSrcMine = "";
+            }
+            else
+            {
+                imgSrcMine = "https://static.giantbomb.com/uploads/original/9/95666/1878961-pik.gif";
+
+            }
+        }
+        <img style="height: 450px; width: 300px;" src="@imgSrcMine" />
+        <dl>
+            <dt class="col-sm-2">
+                @cardLabelMine
+            </dt>
+            <dd class="col-sm-10">
+                @cardNameMine
+            </dd>
+            <dt class="col-sm-2">
+                @cashOfferLabelMine
+            </dt>
+            <dd class="col-sm-10">
+                @cashOfferMine
+            </dd>
+        </dl>
+
+        @if (Model.OwnsListingOne && Model.Offer.TradeState == TradeState.PendingOffer)
+        {
+            <a asp-action="Accept" asp-route-id="@Model.Offer.Id">Accept</a>
+            <a asp-action="Decline" asp-route-controller="TradeOffers" asp-route-id="@Model.Offer.Id">Decline</a>
+        }
+        else if (Model.OwnsListingOne && Model.Offer.TradeState == TradeState.PaymentComplete)
+        {
+            <a asp-action="Ship" asp-route-controller="TradeOffers" asp-route-id="@Model.Offer.Id">Ship</a>
+
+        }
+        else if (Model.OwnsListingOne && Model.Offer.TradeState == TradeState.Completed)
+        {
+            <form asp-action="Review">
+                <div class="form-group">
+                    <p> User Life Points Review (out of 8000)</p>
+                    <input asp-for="@Model.Offer.TradeListingOne.UserRating" value="@Model.Offer.TradeListingTwo.UserRating" type="number" class="form-control" />
+                    <input asp-for="@Model.Offer.Id" type="hidden" class="form-control" value="@Model.Offer.Id" />
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Rate" class="btn btn-primary" />
+                </div>
+            </form>
+
+        }
+        else if (Model.OwnsListingTwo && Model.Offer.TradeState == TradeState.AwaitingPayment)
+        {
+            <a asp-action="Payment" asp-route-controller="TradeOffers" asp-route-id="@Model.Offer.Id">Make Payment</a>
+
+        }
+        else if (Model.OwnsListingTwo && Model.Offer.TradeState == TradeState.Completed)
+        {
+            <form asp-action="Review">
+                <div class="form-group">
+                    <p> User Life Points Review (out of 8000)</p>
+                    <input asp-for="@Model.Offer.TradeListingOne.UserRating" value="@Model.Offer.TradeListingOne.UserRating" type="number" class="form-control" />
+                    <input asp-for="@Model.Offer.Id" type="hidden" class="form-control" value="@Model.Offer.Id" />
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Rate" class="btn btn-primary" />
+                </div>
+            </form>
+
+        }
+        else if (Model.OwnsListingTwo && Model.Offer.TradeState == TradeState.Shipped)
+        {
+            <a asp-action="Complete" asp-route-controller="TradeOffers" asp-route-id="@Model.Offer.Id">Complete</a>
+
+        }
+        else if (Model.OwnsListingTwo && Model.Offer.TradeState == TradeState.PendingOffer)
+        {
+            <a asp-action="Decline" asp-route-controller="TradeOffers" asp-route-id="@Model.Offer.Id">Cancel</a>
+
+        }
+        else if (Model.Offer.TradeState == TradeState.Completed && Model.OwnsListingTwo)
+        {
+            <form asp-action="Review">
+                <div class="form-group">
+                    <p> User Life Points Review (out of 8000)</p>
+                    <input asp-for="@Model.Offer.TradeListingOne.UserRating" value="@Model.Offer.TradeListingOne.UserRating" type="number" class="form-control" />
+                    <input asp-for="@Model.Offer.Id" type="hidden" class="form-control" value="@Model.Offer.Id" />
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Create" class="btn btn-primary" />
+                </div>
+            </form>
+        }
+        else if (Model.Offer.TradeState == TradeState.Completed && Model.OwnsListingOne)
+        {
+            <form asp-action="Review">
+                <div class="form-group">
+                    <p> User Life Points Review (out of 8000)</p>
+                    <input asp-for="@Model.Offer.TradeListingOne.UserRating" value="@Model.Offer.TradeListingTwo.UserRating" type="number" class="form-control" />
+                    <input asp-for="@Model.Offer.Id" type="hidden" class="form-control" value="@Model.Offer.Id" />
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Create" class="btn btn-primary" />
+                </div>
+            </form>
+        }
+    </div>
+</div>
+<div class="col">
+    <h4>Their Offer</h4>
+    <hr />
+    <div class="col">
+        @{
+                string imgSrcTheirs = "";
+            string cardNameTheirs = "";
+            string cardLabelTheirs = "";
+            string cashOfferLabelTheirs = "";
+            string cashOfferTheirs = "";
+        }
+        @if (!Model.OwnsListingOne)
+        {
+            if (Model.Offer.TradeListingOne?.Card != null)
+            {
+                cardLabelTheirs = "Card:";
+                cardNameTheirs = Model.Offer.TradeListingOne.Card.Name;
+            }
+            if (Model.Offer.TradeListingOne?.CashOffer != null && Model.Offer.TradeListingOne.CashOffer > 0)
+            {
+                cashOfferLabelTheirs = "Cash Offer:";
+                cashOfferTheirs = Model.Offer.TradeListingOne.CashOfferDisplay;
+            }
+            if (Model.Offer.TradeListingOne?.Card?.ImageBytes != null)
+            {
+                var base64 = Convert.ToBase64String(Model.Offer.TradeListingOne.Card.ImageBytes);
+                imgSrcTheirs = String.Format("data:image/gif;base64,{0}", base64);
+            }
+            else if (Model.Offer.TradeListingOne?.Card == null)
+            {
+                imgSrcTheirs = "";
+            }
+            else
+            {
+                imgSrcTheirs = "https://static.giantbomb.com/uploads/original/9/95666/1878961-pik.gif";
+
+            }
+        }
+        else if (!Model.OwnsListingTwo)
+        {
+            if (Model.Offer.TradeListingTwo?.Card != null)
+            {
+                cardLabelTheirs = "Card:";
+                cardNameTheirs = Model.Offer.TradeListingTwo.Card.Name;
+            }
+            if (Model.Offer.TradeListingTwo?.CashOffer != null && Model.Offer.TradeListingTwo.CashOffer > 0)
+            {
+                cashOfferLabelTheirs = "Cash Offer:";
+                cashOfferTheirs = Model.Offer.TradeListingTwo.CashOfferDisplay;
+            }
+            if (Model.Offer.TradeListingTwo?.Card?.ImageBytes != null)
+            {
+                var base64 = Convert.ToBase64String(Model.Offer.TradeListingTwo.Card.ImageBytes);
+                imgSrcTheirs = String.Format("data:image/gif;base64,{0}", base64);
+            }
+            else if (Model.Offer.TradeListingTwo?.Card == null)
+            {
+                imgSrcTheirs = "";
+            }
+            else
+            {
+                imgSrcTheirs = "https://static.giantbomb.com/uploads/original/9/95666/1878961-pik.gif";
+
+            }
+        }
+        <img style="height: 450px; width: 300px;" src="@imgSrcTheirs" />
+        <dl>
+            <dt class="col-sm-2">
+                @cardLabelTheirs
+            </dt>
+            <dd class="col-sm-10">
+                @cardNameTheirs
+            </dd>
+            <dt class="col-sm-2">
+                @cashOfferLabelTheirs
+            </dt>
+            <dd class="col-sm-10">
+                @cashOfferTheirs
+            </dd>
+        </dl>
+        @if (Model.OwnsListingOne)
+        {
+            <a asp-action="DetailsUser" asp-route-controller="Profile" asp-route-id="@Model.Offer.TradeListingTwo.ApplicationUserId">View User</a>
+        }
+        else
+        {
+            <a asp-action="DetailsUser" asp-route-controller="Profile" asp-route-id="@Model.Offer.TradeListingOne.ApplicationUserId">View User</a>
+        }
+    </div>
+</div>
+

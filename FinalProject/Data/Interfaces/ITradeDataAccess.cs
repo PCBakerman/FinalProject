@@ -16,6 +16,9 @@ namespace FinalProject.Data.Interfaces
         public Task<int> GetActiveTradeListingCountByUser(string userId);
         public Task<TradeListing> GetTradeListing(int id);
         public Task<List<TradeListing>> GetTradeListings();
+        public Task<TradeOffer> UpsertTradeOffer(TradeOffer tradeOffer);
+        public Task<TradeOffer> GetTradeOfferAsync(int id);
+        public Task<List<TradeOffer>> GetTradeOffersByUserAync(string userId);
         public Task<bool> DeleteTradeListing(int id);
     }
 }

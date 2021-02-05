@@ -114,8 +114,11 @@ namespace FinalProject.Data
         }
         public async Task<InventoryCardMapping> GetSpecificCardMappingForUserAsync(int userInventoryId, int cardId)
         {
-            var mapping =  _context.InventoryCardMappings.FirstOrDefault(x => x.UserInventoryId == userInventoryId && x.CardId == cardId);
-            mapping.Card = await GetCardAsync(mapping.CardId);
+            var mapping = _context.InventoryCardMappings.FirstOrDefault(x => x.UserInventoryId == userInventoryId && x.CardId == cardId);
+            if (mapping != null)
+            {
+                mapping.Card = await GetCardAsync(mapping.CardId);
+            }
             return mapping;
 
         }

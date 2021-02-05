@@ -84,7 +84,7 @@
             </td>
             <td>
                 <a asp-action="Details" asp-route-id="@item.Id">View Listing</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Make Offer</a>
+                <a asp-action="Create" asp-route-controller="TradeOffers" asp-route-id="@item.Id">Make Offer</a>
             </td>
         </tr>
         }

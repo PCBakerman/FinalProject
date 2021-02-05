@@ -20,6 +20,7 @@ namespace FinalProject.Data
         public DbSet<DefaultImage> DefaultImages { get; set; }
         public DbSet<TradeListing> TradeListings { get; set; }
         public DbSet<TradeOffer> TradeOffers { get; set; }
+        public DbSet<FriendBlockItem> FriendBlockItems { get; set; }
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
@@ -32,6 +33,8 @@ namespace FinalProject.Data
                 .HasKey(c => new { c.DeckId, c.CardId });
             modelBuilder.Entity<InventoryCardMapping>()
                 .HasKey(c => new { c.UserInventoryId, c.CardId });
+            modelBuilder.Entity<FriendBlockItem>()
+                .HasKey(c => new { c.UserInventoryOneId, c.UserInventorTwoId });
 
         }
     }

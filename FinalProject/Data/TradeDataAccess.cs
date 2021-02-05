@@ -11,7 +11,7 @@ namespace FinalProject.Data
     {
         public static bool IsStateDeletable(TradeState state)
         {
-            switch (state) 
+            switch (state)
             {
                 case TradeState.Listed:
                 case TradeState.Offered:
@@ -32,10 +32,28 @@ namespace FinalProject.Data
         {
             if (listing.CardId > 0)
                 listing.Card = _context.Cards.Find(listing.CardId);
-            var user = _context.Users.FirstOrDefault(x=>x.Id == listing.ApplicationUserId);
+            var user = _context.Users.FirstOrDefault(x => x.Id == listing.ApplicationUserId);
             listing.Email = user.Email;
             listing.UserRating = await GetUserRating(listing.ApplicationUserId);
             return listing;
+        }
+        private async Task<TradeOffer> PopulateOfferData(TradeOffer offer)
+        {
+            if (offer.TradeListingOneId > 0)
+            {
+                offer.TradeListingOne = _context.TradeListings.Find(offer.TradeListingOneId);
+                if (offer.TradeListingOne != null)
+                    offer.TradeListingOne = await PopulateListingData(offer.TradeListingOne);
+
+            }
+            if (offer.TradeListingTwoId > 0)
+            {
+                offer.TradeListingTwo = _context.TradeListings.Find(offer.TradeListingTwoId);
+                if (offer.TradeListingTwo != null)
+                    offer.TradeListingTwo = await PopulateListingData(offer.TradeListingTwo);
+
+            }
+            return offer;
         }
         public async Task<List<TradeListing>> GetTradeListings()
         {
@@ -61,7 +79,7 @@ namespace FinalProject.Data
         public async Task<TradeListing> GetTradeListing(int id)
         {
             var listing = _context.TradeListings.FirstOrDefault(x => x.Id == id);
-            if(listing != null)
+            if (listing != null)
             {
                 listing = await PopulateListingData(listing);
             }
@@ -74,7 +92,7 @@ namespace FinalProject.Data
         }
         public async Task<List<TradeListing>> GetTradeListingsByCard(int cardId)
         {
-            var listings =  _context.TradeListings.Where(x => x.CardId == cardId).ToList();
+            var listings = _context.TradeListings.Where(x => x.CardId == cardId).ToList();
             var filledListings = new List<TradeListing>();
             foreach (var listing in listings)
             {
@@ -84,7 +102,7 @@ namespace FinalProject.Data
         }
         public async Task<TradeListing> UpsertTradeListing(TradeListing tradeListing)
         {
-            if(tradeListing.Id > 0)
+            if (tradeListing.Id > 0)
             {
                 var dataTradeListing = _context.TradeListings.Find(tradeListing.Id);
                 if (dataTradeListing != null)
@@ -112,11 +130,71 @@ namespace FinalProject.Data
                     _context.SaveChanges();
                     tradeListing = await PopulateListingData(tradeListing);
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
 
                 }
                 return tradeListing;
+            }
+        }
+        public async Task<TradeOffer> GetTradeOfferAsync(int id)
+        {
+            var offer = _context.TradeOffers.FirstOrDefault(x => x.Id == id);
+            if (offer != null)
+            {
+                offer = await PopulateOfferData(offer);
+            }
+            return offer;
+        }
+        public async Task<List<TradeOffer>> GetTradeOffersByUserAync(string userId)
+        {
+            var listingsIds = _context.TradeListings.Where(x => x.ApplicationUserId == userId).Select(x => x.Id).ToList();
+            var offers = _context.TradeOffers.Where(x => listingsIds.Contains(x.TradeListingOneId) || listingsIds.Contains(x.TradeListingTwoId)).ToList();
+            var filledOffers = new List<TradeOffer>();
+            foreach (var offer in offers)
+            {
+                filledOffers.Add(await PopulateOfferData(offer));
+            }
+            return filledOffers;
+        }
+        public async Task<TradeOffer> UpsertTradeOffer(TradeOffer tradeOffer)
+        {
+            if (tradeOffer.Id > 0)
+            {
+                var dataTradeOffer = _context.TradeOffers.Find(tradeOffer.Id);
+                if (dataTradeOffer != null)
+                {
+                    dataTradeOffer.TradeListingTwoId = tradeOffer.TradeListingTwoId;
+                    dataTradeOffer.TradeListingOneId = tradeOffer.TradeListingOneId;
+                    dataTradeOffer.TradeListingOneRating = tradeOffer.TradeListingOneRating;
+                    dataTradeOffer.TradeListingTwoRating = tradeOffer.TradeListingTwoRating;
+                    dataTradeOffer.TradeState = tradeOffer.TradeState;
+                    await _context.SaveChangesAsync();
+                    dataTradeOffer = await PopulateOfferData(dataTradeOffer);
+                    return dataTradeOffer;
+                }
+                else
+                {
+                    _context.TradeOffers.Add(tradeOffer);
+                    await _context.SaveChangesAsync();
+                    tradeOffer = await PopulateOfferData(tradeOffer);
+                    return tradeOffer;
+                }
+            }
+            else
+            {
+                try
+                {
+                    _context.TradeOffers.Add(tradeOffer);
+                    await _context.SaveChangesAsync();
+                    tradeOffer = await PopulateOfferData(tradeOffer);
+                    return tradeOffer;
+                }
+                catch (Exception e)
+                {
+
+                }
+                return tradeOffer;
             }
         }
         public async Task<int> GetUserTradeListingLimit(string userId)

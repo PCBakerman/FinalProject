@@ -1,0 +1,61 @@
+﻿@model FinalProject.Models.ViewModels.CreateTradeOfferViewModel
+
+@{
+    ViewData["Title"] = "Create Offer";
+}
+<h4>Create Offer</h4>
+<hr />
+
+<div class="row">
+    <div class="col">
+        <h4>My Offer</h4>
+        <hr />
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label class="control-label">Card</label>
+                <select asp-for="@Model.Listing.CardId" class="form-control" asp-items="@Model.CardOptions"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="@Model.Listing.CashOffer" class="control-label"></label>
+                <input asp-for="@Model.Listing.CashOffer" type="number" class="form-control" />
+
+                <label asp-for="@Model.Listing.Description" class="control-label"></label>
+                <input asp-for="@Model.Listing.Description" type="text" class="form-control" />
+                <input asp-for="@Model.TradeOffer.TradeListingOneId" type="hidden" class="form-control" value="@Model.TradeOffer.TradeListingOneId" />
+            </div>
+            
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+    <div class="col">
+        <h4>Their Offer</h4>
+        <hr />
+        <div class="col">
+            @{
+                string imgSrc;
+                if (Model.TradeOffer.TradeListingOne.Card.ImageBytes != null)
+                {
+                    var base64 = Convert.ToBase64String(Model.TradeOffer.TradeListingOne.Card.ImageBytes);
+                    imgSrc = String.Format("data:image/gif;base64,{0}", base64);
+                }
+                else
+                {
+                    imgSrc = "https://static.giantbomb.com/uploads/original/9/95666/1878961-pik.gif";
+                }
+            }
+            <img style="height: 578px; width: 400px;" src="@imgSrc" />
+            <p>@Html.Display(Model.TradeOffer.TradeListingOne.Card.Name)</p>
+        </div>
+    </div>
+
+</div>
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

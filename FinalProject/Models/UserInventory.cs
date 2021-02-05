@@ -13,5 +13,12 @@ namespace FinalProject.Models
         public string ApplicationUserId { get; set; }
         public ApplicationUser ApplicationUser { get; set; }
         public List<Deck> Decks { get; set; }
+        public bool IsAddressPublic { get; set; }
+        public string AddressLine { get; set; }
+        public string City { get; set; }
+        public string State { get; set; }
+        public string Zip { get; set; }
+        [NotMapped]
+        public string Email { get; set; }
     }
 }
